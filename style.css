@@ -1,0 +1,12 @@
+body {
+    background-color: rgb(24, 24, 39);
+    color: white;
+}
+
+form * {
+    margin-bottom: 10px;
+}
+
+#country {
+    width: 150px;
+}
