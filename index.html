@@ -20,7 +20,7 @@
     </header>
 
     <main>
-        <form id="form" onsubmit="checkIfDry()">
+        <form id="form" ><!--onsubmit="checkIfDry()"-->
             <label for="rockType">Rock type:</label>
             <select id="rockType" name="rockType">
                 <option value = "granite">Granite</option>
@@ -35,7 +35,7 @@
                 <option value = "diabase">Diabase</option>
             </select>
             <br>
-            <label for="country">Country:</label>
+            <!-- <label for="country">Country:</label>
             <select class="form-select" id="country" name="country">
                 <option>select country</option>
                 <option value="AF">Afghanistan</option>
@@ -290,8 +290,8 @@
                 <option value="YE">Yemen</option>
                 <option value="ZM">Zambia</option>
                 <option value="ZW">Zimbabwe</option>
-            </select><br>
-            <label for="location">Zip Code:</label>
+            </select><br> -->
+            <label for="location">City or Zip Code:</label>
                 <input type="text" id="location" name="location" placeholder="00000">
                 <br>
             <input type="submit" value="Submit">
