@@ -1,12 +1,84 @@
-body {
-    background-color: rgb(24, 24, 39);
-    color: white;
+@font-face {
+    font-family: 'mono';
+    src: url(/assets/fonts/MonoRegular-jEmAR.ttf);
 }
 
-form * {
+body {
+    font-family: 'mono';
+    margin: 0;
+    background-color: rgb(34, 34, 43);
+    color: white;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#body-border {
+    position: absolute;
+    z-index: 100;
+    width: 98%;
+    height: 98%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border: 2px solid rgba(48, 47, 47, 0.856);
+    background-color: black;
+    border-radius: 30px;
+}
+
+header {
+    text-align: center;
+}
+
+#form-border {
+    margin-top: 70px;
+    width: 250px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(30deg, rgb(107, 20, 110) 30%, rgba(255, 255, 0, 0.671) 50%, rgb(109, 0, 0) 70%);
+    border-radius: 22px;
+}
+
+#form {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.918);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 97%;
+    width: 97.5%
+}
+
+form input {
     margin-bottom: 10px;
+    width: 150px;
+}
+
+form label {
+    padding: 10px;
+}
+
+#submit {
+    position: absolute;
+    bottom: 5px;
 }
 
 #country {
     width: 150px;
+}
+
+#results {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    padding: 10px;
+    height: 300px;
+    background-color: rgb(34, 34, 43);
 }
