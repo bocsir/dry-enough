@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "dry-enough",
+  "version": "1.0.0",
+  "main": "script.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bocsir/dry-enough.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bocsir/dry-enough/issues"
+  },
+  "homepage": "https://github.com/bocsir/dry-enough#readme",
+  "description": ""
+}
