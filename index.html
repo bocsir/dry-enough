@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dry Enough</title>
+    <meta name="viewport" 
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">    <title>Dry Enough</title>
     <link rel="icon" href="/assets/favicon-new.ico" type="image/x-icon" />
     <script src="https://kit.fontawesome.com/81762fab05.js" crossorigin="anonymous"></script>
 
@@ -27,7 +27,7 @@
                     <label for="location">city name or zip code</label>
                         <input type="text" id="location" name="location" placeholder="ex: Boulder / 80302">
                         <br>
-                    <input type="submit" value="Submit" id="submit">
+                    <input type="submit" id="submit" value="Submit" onClick="submitForm(); return false;">
                 </form>    
             </section>   
             
