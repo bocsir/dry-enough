@@ -1,7 +1,7 @@
-require('dotenv').config();
+// require('dotenv').config();
 
-const express = require('express');
-const app = express();
-const port = 3000;
+// const express = require('express');
+// const app = express();
+// const port = 3000;
 
-const apiKey = process.env.API_KEY;
+// const apiKey = process.env.API_KEY;
