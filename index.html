@@ -15,7 +15,7 @@
     <div id="body-border">
         <header>
             <h1>is it dry enough to climb?</h1>
-            <p>To avoid poor conditions or risk breaking rock, use this tool.</p>
+            <p>To avoid poor conditions or risk breaking rock, make sure the rock will be dry enough.</p>
             <p>Input any city name or zip code and get the last few days of weather data.</p>
             <hr>
         </header>
@@ -23,21 +23,7 @@
         <main>
             <section id="form-border">
                 <form id="form">
-                    <label for="rockType">rock type</label>
-                    <select id="rockType" name="rockType">
-                        <option>select one</option>
-                        <option value = "granite">Granite</option>
-                        <option value = "limestone">Limestone</option>
-                        <option value = "hard-sandstone">Hard sandstone</option>
-                        <option value = "soft-sandstone">Soft sandstone</option>
-                        <option value = "gneiss">Gneiss</option>
-                        <option value = "quarzite">Quartzite</option>
-                        <option value = "slate">Slate</option>
-                        <option value = "grit">Gritstone</option>
-                        <option value = "basalt">Basalt</option>
-                        <option value = "diabase">Diabase</option>
-                    </select>
-                    <br>
+                    
                     <label for="location">city name or zip code</label>
                         <input type="text" id="location" name="location" placeholder="ex: Boulder / 80302">
                         <br>
@@ -47,7 +33,6 @@
             
             <section id="weather-results">
                 <h3 id="results-header"></h3>
-                <!-- <p>*placeholder*<br>inputted rocktype should be dry/wet</p> -->
                 <div id="weather-grid">
                     <div class="weather-item" id="day1">
                         <div class="inline-span">
@@ -135,6 +120,14 @@
                     </div>
                 </div>
             </section>
+            <article>
+                <p id="note">
+                    <strong>Note:</strong><br> Since dry time varies by rock type, check or ask for 
+                    information about when it is safe to climb at your crag. If unsure, know that denser rock 
+                    types like granite and limestone can take up to 2 rainless days to dry while more pourus 
+                    types like soft sandstone can take up to 3 or 4 days to dry.
+                </p>
+            </article>
         </main>
     
     </div>
