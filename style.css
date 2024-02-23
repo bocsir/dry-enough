@@ -10,7 +10,7 @@ html {
 body {
     font-family: 'mono';
     margin: 0;
-    background-color: rgb(34, 34, 43);
+    background-color: rgb(31, 31, 36);
     color: white;
     min-height: 100%;
     width: 100%;
@@ -29,6 +29,7 @@ main {
 }
 
 #body-border {
+    margin: 20px 0;
     position: relative;
     width: 96%;
     height: 96%;
@@ -36,7 +37,7 @@ main {
     display: flex;
     align-items: center;
     flex-direction: column;
-    border: 4px solid rgba(48, 47, 47, 0.856);
+    border: 6px solid rgba(99, 94, 94, 0.856);
     background-color: black;
     border-radius: 30px;
 }
@@ -90,6 +91,7 @@ form label {
     color: white;
     background-color: transparent;
     border-radius: 8px;
+    cursor: pointer;
 }
 
 article {
@@ -125,7 +127,7 @@ article #note {
 
 .weather-item {
     padding: 10px;
-    border: 2px solid white;
+    border: 1px solid rgb(129, 122, 122);
     width: 8rem;
     border-radius: 10px;  
     display: flex;
