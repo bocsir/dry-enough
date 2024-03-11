@@ -3,40 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" 
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">    <title>Dry Enough</title>
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Dry Enough</title>
     <script src="https://kit.fontawesome.com/81762fab05.js" crossorigin="anonymous"></script>
     <link rel="icon" type="image/x-icon" href="assets/pixil-frame-0.ico">
-    <script async defer src="script.js"></script>
     <link rel="stylesheet" href="style.css">
-
+    <script async defer src="script.js"></script>
 </head>
 <body>
     <div id="body-border">
         <header>
             <h1>is it dry enough to climb?</h1>
             <p>To avoid poor conditions or breaking rock, make sure the rock is dry</p>
-            <p>Input any city name or zip code and get the last few days of weather data</p>
+            <p>Input any city name or zip code to get the last few days of weather data</p>
             <hr>
         </header>
     
         <main>
             <section id="form-border">
-                <form id="form">
+                <form id="form" action="/submit" method="POST">
                     
                     <label for="location">location name or zip</label>
                         <input type="text" id="location" name="location" placeholder="ex: Boulder / 80302">
                         <br>
-                    <input type="submit" id="submit" value="Submit" onClick="submitForm(); return false;">
+                    <input type="submit" id="submit" value="Submit" onClick="submitForm(); return false">
                 </form>    
             </section>   
-            
+
             <section id="weather-results">
                 <h3 id="results-header"></h3>
+                <div class="button r" id="button-1">
+                    <input type="checkbox" class="checkbox" />
+                    <div class="knobs"></div>
+                    <div class="layer"><span id="temp-unit">°F</span></div>
+                </div>
                 <div id="weather-grid">
                     <div class="weather-item" id="day1">
                         <div class="inline-span">
                             <p class="date"></p>
-                            <p class="weather-icon">
+                            <p class="weather-icon"></p>
                         </div>
 
                         <div class="weather-data">
@@ -50,7 +55,7 @@
                     <div class="weather-item" id="day2">
                         <div class="inline-span">
                             <p class="date"></p>
-                            <p class="weather-icon">
+                            <p class="weather-icon"></p>
                         </div>
 
                         <div class="weather-data">
@@ -64,7 +69,7 @@
                     <div class="weather-item" id="day3">
                         <div class="inline-span">
                             <p class="date"></p>
-                            <p class="weather-icon">
+                            <p class="weather-icon"></p>
                         </div>
 
                         <div class="weather-data">
@@ -78,7 +83,7 @@
                     <div class="weather-item" id="day4">
                         <div class="inline-span">
                             <p class="date"></p>
-                            <p class="weather-icon">
+                            <p class="weather-icon"></p>
                         </div>
 
                         <div class="weather-data">
@@ -92,7 +97,7 @@
                     <div class="weather-item" id="day5">
                         <div class="inline-span">
                             <p class="date"></p>
-                            <p class="weather-icon">
+                            <p class="weather-icon"></p>
                         </div>
 
                         <div class="weather-data">
@@ -106,7 +111,7 @@
                     <div class="weather-item" id="day6">
                         <div class="inline-span">
                             <p class="date"></p>
-                            <p class="weather-icon">
+                            <p class="weather-icon"></p>
                         </div>
 
                         <div class="weather-data">
@@ -117,19 +122,66 @@
                             <p class="min-temp"></p>
                         </div>
                     </div>
+                    
                 </div>
+
             </section>
             <article>
                 <p id="note">
-                    <strong>Note:</strong><br> Since dry time varies by rock type, check or ask for 
+                    <strong>Note:</strong><br> Since time to dry varies by rock type, check or ask for 
                     information about when it is safe to climb at your crag. Typically denser rock 
                     types like granite and limestone can take up to 2 rainless days to dry while more pourus 
                     types like soft sandstone can take up to 3 or 4 days to dry. Find crag info on 
-                    <a href="https://www.mountainproject.com/">mountainproject.com</a>.
+                    <a href="https://www.mountainproject.com/">mountainproject.com</a>.<br><br>
+                    Powered by <a href="https://www.weatherapi.com/" title="Weather API">WeatherAPI.com</a>
                 </p>
             </article>
         </main>
     
     </div>
+    <script type="module">
+
+        // Import the functions you need from the SDKs you need
+      
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+      
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
+      
+        // TODO: Add SDKs for Firebase products that you want to use
+      
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+      
+        // Your web app's Firebase configuration
+      
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      
+        const firebaseConfig = {
+      
+          apiKey: "AIzaSyD7oU6BQELE1WN-doilr6zCvCsxGP2zalo",
+      
+          authDomain: "dry-enough-653fd.firebaseapp.com",
+      
+          projectId: "dry-enough-653fd",
+      
+          storageBucket: "dry-enough-653fd.appspot.com",
+      
+          messagingSenderId: "173297603612",
+      
+          appId: "1:173297603612:web:757a44b07b0e377c8e3bd9",
+      
+          measurementId: "G-8ZFRGLERWZ"
+      
+        };
+      
+      
+        // Initialize Firebase
+      
+        const app = initializeApp(firebaseConfig);
+      
+        const analytics = getAnalytics(app);
+      
+      </script>
+      
 </body>
 </html>

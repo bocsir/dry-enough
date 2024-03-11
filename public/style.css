@@ -1,0 +1,361 @@
+@font-face {
+    font-family: "mono";
+    src: url(assets/fonts/MonoRegular-jEmAR.ttf) format("truetype");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    font-family: "mono", monospace;
+    background-color: rgb(31, 31, 36);
+    color: white;
+    min-height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4em;
+}
+
+main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: calc(100% - 300px);
+}
+
+#body-border {
+    margin: 20px 0;
+    position: relative;
+    width: 96%;
+    height: 96%;
+    min-height: 95vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border: 6px solid rgba(99, 94, 94, 0.856);
+    background-color: black;
+    border-radius: 30px;
+}
+
+header {
+    margin: 25px;
+    width: 90%;
+    text-align: center;
+}
+
+header * {
+    margin-bottom: 10px;
+}
+
+hr {
+    margin-top: 15px;
+    width: 80%;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#form-border {
+    position: relative;
+    margin-top: 20px;
+    font-size: 1.6rem;
+    width: 20rem;
+    height: 10rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(30deg,
+            rgb(107, 20, 110) 30%,
+            rgb(255, 255, 0) 50%,
+            rgb(109, 0, 0) 70%);
+    border-radius: 22px;
+}
+
+#form {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.918);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 97%;
+    width: 97.5%;
+}
+
+form input {
+    font-size: 1rem;
+    margin-top: 10px;
+    width: 13rem;
+    height: 1.6rem;
+}
+
+form label {
+    padding: 10px;
+}
+
+#submit {
+    font-size: 1rem;
+    position: relative;
+    margin-top: 28px;
+    width: 91px;
+    border: 1px solid rgb(129, 122, 122);
+    color: white;
+    background-color: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+article {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+article #note {
+    width: 70%;
+    max-width: 525px;
+    font-size: 0.9rem;
+    margin: 40px 0;
+}
+
+#country {
+    width: 150px;
+}
+
+#weather-results {
+    position: relative;
+    margin-top: 50px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+
+.weather-item {
+    padding: 10px;
+    border: 1px solid rgb(129, 122, 122);
+    width: 8rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+}
+
+#weather-grid {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 15px;
+}
+
+#results-header {
+    max-width: 85vw;
+    text-align: center;
+}
+
+.weather-icon {
+    font-size: 2rem;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.date {
+    position: absolute;
+    margin-right: 5.5rem;
+    font-size: 0.8em;
+}
+
+.inline-span {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.weather-data {
+    position: relative;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.max-temp,
+.min-temp {
+    color: rgb(114, 114, 114);
+}
+
+.weather-data * {
+    margin: 0;
+}
+
+.fa-droplet {
+    font-size: 0.8em;
+}
+
+.percip-data {
+    font-size: 0.8em;
+}
+
+/* toggle button */
+
+.knobs,
+.layer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.button {
+    position: relative;
+    top: 50%;
+    width: 55px;
+    height: 35px;
+    margin-top: 10px;
+}
+
+.button.r,
+.button.r .layer {
+    border-radius: 100px;
+}
+
+.checkbox {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.knobs {
+    z-index: 2;
+}
+
+.layer {
+    top: 7px;
+    width: 100%;
+    background-color: transparent;
+    border: 2px solid rgb(114, 114, 114);
+    transition: 0.3s ease all;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+}
+
+#temp-unit {
+    letter-spacing: -3px;
+    color: black;
+    font-family: 'mono';
+    font-size: 1.1rem;
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    transition: 0.6s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
+
+}
+
+#button-1 .knobs:before {
+    content: "";
+    position: absolute;
+    top: 11px;
+    left: 5px;
+    width: 20px;
+    height: 20px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
+}
+
+#button-1 .checkbox:checked+.knobs:before {
+    content: "";
+    left: 31px;
+}
+
+#button-1 .knobs,
+#button-1 .knobs:before,
+#button-1 .layer {
+    transition: 0.3s ease all;
+}
+
+@media (max-width: 750px) {
+    header {
+        font-size: 1.2rem;
+    }
+
+    main {
+        height: max-content;
+    }
+}
+
+@media (max-width: 525px) {
+    header {
+        font-size: 0.9rem;
+    }
+
+    .weather-icon {
+        font-size: 1.5rem;
+    }
+
+    .date {
+        margin-right: 3.7rem;
+    }
+
+    #weather-grid {
+        gap: 5px;
+    }
+
+    .weather-item {
+        font-size: 1rem;
+        width: 6rem;
+        height: 6rem;
+        padding: 0;
+    }
+
+    .date {
+        margin-right: 3.7rem;
+        margin-top: 0;
+    }
+
+    .weather-data {
+        margin: 0;
+        margin-bottom: 5px;
+    }
+
+    .weather-data p {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .weather-item {
+        width: 80px;
+        font-size: 0.8em;
+        padding-bottom: 20px;
+    }
+
+    .date {
+        margin-left: 15px;
+    }
+
+    .percip {
+        font-size: 1rem;
+    }
+}
