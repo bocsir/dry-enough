@@ -17,7 +17,7 @@
   },
   "name": "dry-enough",
   "version": "1.0.0",
-  "main": "script.js",
+  "main": "server.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bocsir/dry-enough.git"

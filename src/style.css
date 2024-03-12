@@ -1,6 +1,6 @@
 @font-face {
     font-family: "mono";
-    src: url(assets/fonts/MonoRegular-jEmAR.ttf) format("truetype");
+    src: url(../fonts/MonoRegular-jEmAR.ttf) format("truetype");
 }
 
 * {

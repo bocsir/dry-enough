@@ -33,7 +33,9 @@ wss.on('connection', (socket) => {
 
 wss.on('error', console.error);
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'src')));
+app.use(express.static(path.join(__dirname, 'assets')));
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -82,7 +84,7 @@ app.post('/submit', async (req, res) => {
 
 // Define a route to handle the root URL
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/index.html'));
+    res.sendFile(path.join(__dirname, 'src/index.html'));
 });
 
 
