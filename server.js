@@ -8,6 +8,7 @@ const WebSocket = require('ws'); //web socket library for communication between 
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+//cors config
 const whitelist = ['http://localhost:5500', 'https://dry-enough.onrender.com'];
 const corsOptions = {
   origin: function (origin, callback) {
