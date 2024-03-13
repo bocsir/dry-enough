@@ -19,7 +19,7 @@ let temperatureData = [
   { day: '6', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null }
 ];
 
-const socket = new WebSocket('wss://dry-enough.onrender.com:5500');
+const socket = new WebSocket('ws://dry-enough.onrender.com:5500');
 
 async function displayWeather(data, day) {
   apiData = data;
@@ -106,7 +106,7 @@ async function submitForm() {
   const location = document.getElementById('location').value;
   const formData = { location: location };
 
-  fetch('http://dry-enough.onrender.com:5500/submit', {
+  fetch('http://localhost:5500/submit', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
