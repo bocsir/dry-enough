@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+  console.log('DOM loaded');
   document.getElementById("weather-results").style.display = "none";
 
   //ensure checkbox is unchecked after page refresh
