@@ -1,19 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
   console.log('DOM loaded');
   document.getElementById("weather-results").style.display = "none";
-  
-  window.socket = new WebSocket('ws://dry-enough.onrender.com:5500');
-  window.formLoaded;
-  window.day = 0;
 
   //ensure checkbox is unchecked after page refresh
   if(document.querySelector(".slider-checkbox").checked) {
     document.querySelector(".slider-checkbox").checked = false;
-  }
+}
 });
 
 
+let formLoaded;
 console.log('test log');
+let day = 0;
 
 let temperatureData = [
   { day: '1', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
@@ -24,6 +22,7 @@ let temperatureData = [
   { day: '6', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null }
 ];
 
+const socket = new WebSocket('ws://dry-enough.onrender.com:5500');
 
 async function displayWeather(data, day) {
   apiData = data;
