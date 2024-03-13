@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 //CORS headers
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:5500');
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5500/submit');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
