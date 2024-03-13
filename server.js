@@ -68,7 +68,7 @@ app.post('/submit', async (req, res) => {
         // make API calls for last 6 days
         for (let i = 1; i <= 6; i++) {
             const weatherApiUrl =
-            "http://api.weatherapi.com/v1/history.json?key=" +
+            "https://api.weatherapi.com/v1/history.json?key=" +
             apiKey +
             "&q=" +
             location +
