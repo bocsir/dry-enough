@@ -6,6 +6,9 @@ const fetch = require('node-fetch'); //node module for making http requests
 const path = require('path'); //node module for file path stuff
 const WebSocket = require('ws'); //web socket library for communication between client and server
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
+app.use(cors());
 
 //headless websocket server
 const wss = new WebSocket.Server( {noServer: true} );
