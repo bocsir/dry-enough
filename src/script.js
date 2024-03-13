@@ -109,8 +109,8 @@ async function submitForm() {
 
   const location = document.getElementById('location').value;
   const formData = { location: location };
-
-  fetch('https://dry-enough.onrender.com:5500/submit', {
+  console.log('attempting post request');
+  fetch('https://dry-enough.onrender.com/submit', {
   //fetch('http://localhost:5500/submit', {
     method: 'POST',
     headers: {
