@@ -6,21 +6,21 @@ const fetch = require('node-fetch'); //node module for making http requests
 const path = require('path'); //node module for file path stuff
 const WebSocket = require('ws'); //web socket library for communication between client and server
 const bodyParser = require('body-parser');
-const cors = require('cors');
+// const cors = require('cors');
 
-//cors config
-const whitelist = ['http://localhost:5500', 'https://dry-enough.onrender.com'];
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
-};
+// //cors config
+// const whitelist = ['http://localhost:5500', 'http://dry-enough.onrender.com'];
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.includes(origin) || !origin) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   }
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 //headless websocket server
 const wss = new WebSocket.Server( {noServer: true} );
@@ -68,7 +68,7 @@ app.post('/submit', async (req, res) => {
         // make API calls for last 6 days
         for (let i = 1; i <= 6; i++) {
             const weatherApiUrl =
-            "https://api.weatherapi.com/v1/history.json?key=" +
+            "http://api.weatherapi.com/v1/history.json?key=" +
             apiKey +
             "&q=" +
             location +
@@ -106,7 +106,7 @@ app.get('/', (req, res) => {
 const port = 5500;
 //start express server
 const server = app.listen(port, () => {
-    console.log(`Server is listening on port: ${port}`);
+    console.log(`Server is listening on port ${port}`);
 });
 
 //attatch websocket server to http server
