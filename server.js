@@ -7,6 +7,15 @@ const path = require('path'); //node module for file path stuff
 const WebSocket = require('ws'); //web socket library for communication between client and server
 const bodyParser = require('body-parser');
 
+//CORS headers
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5500');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
+
 //headless websocket server
 const wss = new WebSocket.Server( {noServer: true} );
 const connectedSockets = {};
