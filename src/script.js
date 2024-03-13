@@ -19,7 +19,7 @@ let temperatureData = [
   { day: '6', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null }
 ];
 
-const socket = new WebSocket('ws://localhost:5500');
+const socket = new WebSocket('ws://dry-enough.onrender.com:5500');
 
 async function displayWeather(data, day) {
   apiData = data;
