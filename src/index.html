@@ -32,11 +32,14 @@
 
             <section id="weather-results">
                 <h3 id="results-header"></h3>
-                <div class="button r" id="button-1">
-                    <input type="checkbox" class="checkbox" />
-                    <div class="knobs"></div>
-                    <div class="layer"><span id="temp-unit">°F</span></div>
+                <div class="slider-container">
+                    <input class="slider-checkbox" type="checkbox">
+                    <div class="border slider-border-left"></div>
+                    <div class="border slider-border-right"></div>
+            
+                    <div class="slider"><span id="slider-text">°F</span></div>
                 </div>
+            
                 <div id="weather-grid">
                     <div class="weather-item" id="day1">
                         <div class="inline-span">

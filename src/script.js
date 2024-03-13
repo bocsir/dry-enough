@@ -1,11 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("weather-results").style.display = "none";
-  if(document.getElementById('temp-unit').textContent === '°C') {
-    document.getElementById('temp-unit').style.left = '29px';
-    console.log('it should be on the right side onow i hop');
-    
-  }
 
+  //ensure checkbox is unchecked after page refresh
+  if(document.querySelector(".slider-checkbox").checked) {
+    document.querySelector(".slider-checkbox").checked = false;
+}
 });
 
 let formLoaded = false;
@@ -60,14 +59,12 @@ async function displayWeather(data, day) {
   //set min temp
   const minTempF = weatherData.querySelector(".min-temp");
 
-  //set temperature based on toggle switch position
-  if(document.getElementById('temp-unit').textContent === '°F') {
-    maxTempF.innerHTML = data.forecast.forecastday[0].day.maxtemp_f;
-    minTempF.innerHTML = data.forecast.forecastday[0].day.mintemp_f;
-  } else {
-    maxTempF.innerHTML = data.forecast.forecastday[0].day.maxtemp_c;
-    minTempF.innerHTML = data.forecast.forecastday[0].day.mintemp_c;
-  }
+  //display temp
+  maxTempF.innerHTML = data.forecast.forecastday[0].day.maxtemp_f;
+  minTempF.innerHTML = data.forecast.forecastday[0].day.mintemp_f;
+  // maxTempF.innerHTML = data.forecast.forecastday[0].day.maxtemp_c;
+  // minTempF.innerHTML = data.forecast.forecastday[0].day.mintemp_c;
+  
 
   //put values in temperatureData
   temperatureData[day-1].maxFahrenheit = data.forecast.forecastday[0].day.maxtemp_f;
@@ -83,24 +80,6 @@ async function displayWeather(data, day) {
 
   return { error: false }
 }
-
-//change temp unit on toggle switch, call toggleTempUnit() with new unit
-document.querySelector('.checkbox').addEventListener('click', () => {
-  //need to be able to chekc position of toggle switch instead of the current temp unit for page refresh when celsius
-  let tempUnitElement = document.getElementById('temp-unit');
-  let tempUnit;
-  if (tempUnitElement.textContent === '°F') { 
-    tempUnit = '°C';
-    tempUnitElement.style.left = '29px'; 
-    console.log('movin rigth');
-  } else { 
-    tempUnit = '°F'; 
-    tempUnitElement.style.left = '3px';
-    console.log('movin left');
-  }
-  tempUnitElement.textContent = tempUnit;
-  toggleTempUnit(tempUnit);
-});
 
 //change temp unit used in weather-grid
 function toggleTempUnit(u) {
@@ -229,3 +208,16 @@ socket.onmessage = function (event) {
     displayWeather(JSON.parse(receivedMsg), day);
   }
 }
+
+const spanElement = document.getElementById('slider-text');
+const checkboxElement = document.querySelector('.slider-checkbox');
+
+checkboxElement.addEventListener('change', () => {
+    if (checkboxElement.checked) {
+        spanElement.innerHTML = '°C';
+        toggleTempUnit();
+    } else {
+        spanElement.innerHTML = '°F';
+        toggleTempUnit('°F');
+    }
+})
