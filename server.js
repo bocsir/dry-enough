@@ -6,17 +6,6 @@ const fetch = require('node-fetch'); //node module for making http requests
 const path = require('path'); //node module for file path stuff
 const WebSocket = require('ws'); //web socket library for communication between client and server
 const bodyParser = require('body-parser');
-// const cors = require('cors');
-
-// //CORS headers
-// app.use((req, res, next) => {
-//     res.header('Access-Control-Allow-Origin', 'http://localhost:5500');
-//     res.header('Access-Control-Allow-Origin', 'http://localhost:5500/submit');
-//     res.header('Access-Control-Allow-Credentials', 'true');
-//     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-//     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//     next();
-// });
 
 //headless websocket server
 const wss = new WebSocket.Server( {noServer: true} );
@@ -64,7 +53,7 @@ app.post('/submit', async (req, res) => {
         // make API calls for last 6 days
         for (let i = 1; i <= 6; i++) {
             const weatherApiUrl =
-            "http://api.weatherapi.com/v1/history.json?key=" +
+            "https://api.weatherapi.com/v1/history.json?key=" +
             apiKey +
             "&q=" +
             location +
@@ -105,7 +94,7 @@ const server = app.listen(port, () => {
     console.log(`Server is listening on port: ${port}`);
 });
 
-//handle client request to upgrade to websocket
+//attatch websocket server to http server
 server.on('upgrade', (request, socket, head) => {
     wss.handleUpgrade(request, socket, head, socket => {
       wss.emit('connection', socket, request);
