@@ -93,11 +93,15 @@ hr {
     width: 97.5%;
 }
 
-form input {
+#location {
     font-size: 1rem;
     margin-top: 10px;
     width: 13rem;
-    height: 1.6rem;
+    padding: 5px;
+    border: 2px solid black;
+    outline: 2px solid white;
+    border-radius: 6px;
+    caret-color:rgb(109, 0, 0);
 }
 
 form label {
@@ -105,14 +109,22 @@ form label {
 }
 
 #submit {
+    font-family: 'mono';
+    margin-top: 20px;
     font-size: 1rem;
     position: relative;
-    width: 91px;
+    width: 80px;
+    height: 1.5rem;
+    padding-top: 2px;
     border: 1px solid rgb(129, 122, 122);
-    color: white;
     background-color: transparent;
     border-radius: 10px;
+    color: white;
     cursor: pointer;
+}
+
+#submit:hover, #submit:focus {
+    transform: scale(1.05);
 }
 
 article {
@@ -270,67 +282,13 @@ article #note {
     left: 30px;   
 }
 
-@media (max-width: 750px) {
-    header {
-        font-size: 1.2rem;
-    }
-
-    main {
-        height: max-content;
-    }
-}
-
 @media (max-width: 525px) {
     header {
         font-size: 0.9rem;
     }
 
-    .weather-icon {
-        font-size: 1.5rem;
-    }
-
-    .date {
-        margin-right: 3.7rem;
-    }
-
     #weather-grid {
-        gap: 5px;
+        grid-template-columns: auto auto;
     }
 
-    .weather-item {
-        font-size: 1rem;
-        width: 6rem;
-        height: 6rem;
-        padding: 0;
-    }
-
-    .date {
-        margin-right: 3.7rem;
-        margin-top: 0;
-    }
-
-    .weather-data {
-        margin: 0;
-        margin-bottom: 5px;
-    }
-
-    .weather-data p {
-        font-size: 0.8rem;
-    }
-}
-
-@media (max-width: 400px) {
-    .weather-item {
-        width: 80px;
-        font-size: 0.8em;
-        padding-bottom: 20px;
-    }
-
-    .date {
-        margin-left: 15px;
-    }
-
-    .percip {
-        font-size: 1rem;
-    }
 }

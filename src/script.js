@@ -23,7 +23,7 @@ let temperatureData = [
 ];
 
 const socket = new WebSocket('wss://dry-enough.onrender.com');
-// const socket = new WebSocket('ws://localhost:5500');
+//const socket = new WebSocket('ws://localhost:5500');
 
 async function displayWeather(data, day) {
   apiData = data;
@@ -109,7 +109,7 @@ async function submitForm() {
 
   const location = document.getElementById('location').value;
   const formData = { location: location };
-  console.log('attempting post request');
+  
   fetch('https://dry-enough.onrender.com/submit', {
   //fetch('http://localhost:5500/submit', {
     method: 'POST',

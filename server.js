@@ -6,21 +6,6 @@ const fetch = require('node-fetch'); //node module for making http requests
 const path = require('path'); //node module for file path stuff
 const WebSocket = require('ws'); //web socket library for communication between client and server
 const bodyParser = require('body-parser');
-// const cors = require('cors');
-
-// //cors config
-// const whitelist = ['http://localhost:5500', 'http://dry-enough.onrender.com'];
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (whitelist.includes(origin) || !origin) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   }
-// };
-
-// app.use(cors(corsOptions));
 
 //headless websocket server
 const wss = new WebSocket.Server( {noServer: true} );
@@ -32,6 +17,7 @@ wss.on('connection', (socket) => {
 
     const clientId =  Date.now().toString();
     connectedSockets[clientId] = socket;
+    
     //send test object to client on connection
     // const testObj = {
     //     message : 'hello client',
