@@ -22,6 +22,7 @@ let temperatureData = [
   { day: '6', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null }
 ];
 
+//create websocket connection
 const socket = new WebSocket('wss://dry-enough.onrender.com');
 //const socket = new WebSocket('ws://localhost:5500');
 
@@ -65,12 +66,9 @@ async function displayWeather(data, day) {
 
   //display temp
   maxTempF.innerHTML = data.forecast.forecastday[0].day.maxtemp_f;
-  minTempF.innerHTML = data.forecast.forecastday[0].day.mintemp_f;
-  // maxTempF.innerHTML = data.forecast.forecastday[0].day.maxtemp_c;
-  // minTempF.innerHTML = data.forecast.forecastday[0].day.mintemp_c;
-  
+  minTempF.innerHTML = data.forecast.forecastday[0].day.mintemp_f;  
 
-  //put values in temperatureData
+  //put values in temperatureData object
   temperatureData[day-1].maxFahrenheit = data.forecast.forecastday[0].day.maxtemp_f;
   temperatureData[day-1].minFahrenheit = data.forecast.forecastday[0].day.mintemp_f;
   temperatureData[day-1].maxCelsius = data.forecast.forecastday[0].day.maxtemp_c;
@@ -85,54 +83,24 @@ async function displayWeather(data, day) {
   return { error: false }
 }
 
-//change temp unit used in weather-grid
-function toggleTempUnit(u) {
-  for (let i = 1; i <= 6; i++) {
-    const weatherItem = document.getElementById("day" + i);
-    const weatherData = weatherItem.querySelector(".weather-data");
-    const maxTemp = weatherData.querySelector(".max-temp");
-    const minTemp = weatherData.querySelector(".min-temp");
-
-    if (u === '°F') {
-      maxTemp.innerHTML = temperatureData[i-1].maxFahrenheit;
-      minTemp.innerHTML = temperatureData[i-1].minFahrenheit;
-    } else {
-      maxTemp.innerHTML = temperatureData[i-1].maxCelsius;
-      minTemp.innerHTML = temperatureData[i-1].minCelsius;
-    }
-  }
-}
-
+//handle submit button press
 async function submitForm() {
+  //start gradient loading animation
   formLoaded = false;
   gradientBorder();
 
+  //send location to server
   const location = document.getElementById('location').value;
-  const formData = { location: location };
-  
-  fetch('https://dry-enough.onrender.com/submit', {
-  //fetch('http://localhost:5500/submit', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(formData),
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Response from server:', data);
-    })
-    .catch(error => {
-      console.error('Error sending data:', error);
-    });
+  socket.send(location);
 }
 
+//set weather icon based on API calls icon text
 function setWeatherIcon(name, weatherIcon) {
   const weatherIcons = {
     '☀️': ["Sunny"],
     '☁️': ["Cloudy", "Overcast"],
     '🌨️': ["Moderate snow", "Patchy light snow", "Light snow", "Light snow showers"],
-    '🌧️': ["Light rain shower", "Light rain", "Patchy rain possible", "Moderate rain at times", "Light drizzle", "Light freezing rain", "Moderate rain", "Light sleet showers"],
+    '🌧️': ["Patchy light rain with thunder", "Patchy light drizzle", "Light rain shower", "Light rain", "Patchy rain possible", "Moderate rain at times", "Light drizzle", "Light freezing rain", "Moderate rain", "Light sleet showers"],
     '⛅': ["Partly cloudy"],
     '❄️': ["Moderate or heavy snow showers", "Heavy snow", "Blizzard"],
     '⛈️': ["Moderate or heavy rain with thunder", "Thundery outbreaks possible"],
@@ -149,11 +117,8 @@ function setWeatherIcon(name, weatherIcon) {
 function formatDate(date) {
   let newDate = date.slice(2).replace(/-/g, "");
 
-  //day
-  const lastTwo = newDate.slice(-2);
-  //month
-  const middle = newDate.slice(2, -2);
-
+  const lastTwo = newDate.slice(-2); //day
+  const middle = newDate.slice(2, -2); //month
   newDate = middle + "<br>" + lastTwo;
   return newDate;
 }
@@ -183,6 +148,7 @@ function showError() {
   formLoaded = true;
 }
 
+//websocket functions
 socket.onerror = function (event) {
   console.log('Connection error:', event);
 }
@@ -195,18 +161,14 @@ socket.onclose = function (event) {
   console.log('Connection closed', event);
 }
 
-const sendMessage = () => {
-  socket.send('hello server');
-}
-
+//handle weather data recieved from server
 socket.onmessage = function (event) {
   day++;
   if (day === 7) { day = 1; }
 
   const receivedMsg = event.data;
-  // console.log('Received message:', receivedMsg);
 
-
+  //display weather on successful response, ask user to reenter location on bad response
   if (receivedMsg === 'bad response') {
     showError();
   } else {
@@ -214,15 +176,35 @@ socket.onmessage = function (event) {
   }
 }
 
-const spanElement = document.getElementById('slider-text');
+//event listener for temperature toggle switch
 const checkboxElement = document.querySelector('.slider-checkbox');
-
 checkboxElement.addEventListener('change', () => {
-    if (checkboxElement.checked) {
-        spanElement.innerHTML = '°C';
-        toggleTempUnit();
-    } else {
-        spanElement.innerHTML = '°F';
-        toggleTempUnit('°F');
-    }
+  const spanElement = document.getElementById('slider-text');
+
+  //toggle unit shown in temp toggle switch and weather grid
+  if (checkboxElement.checked) {
+      spanElement.innerHTML = '°C';
+      toggleTempUnit();
+  } else {
+      spanElement.innerHTML = '°F';
+      toggleTempUnit('°F');
+  }
 })
+
+//change temp unit used in weather-grid
+function toggleTempUnit(u) {
+  for (let i = 1; i <= 6; i++) {
+    const weatherItem = document.getElementById("day" + i);
+    const weatherData = weatherItem.querySelector(".weather-data");
+    const maxTemp = weatherData.querySelector(".max-temp");
+    const minTemp = weatherData.querySelector(".min-temp");
+
+    if (u === '°F') {
+      maxTemp.innerHTML = temperatureData[i-1].maxFahrenheit;
+      minTemp.innerHTML = temperatureData[i-1].minFahrenheit;
+    } else {
+      maxTemp.innerHTML = temperatureData[i-1].maxCelsius;
+      minTemp.innerHTML = temperatureData[i-1].minCelsius;
+    }
+  }
+}
