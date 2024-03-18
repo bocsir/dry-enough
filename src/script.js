@@ -19,7 +19,10 @@ let temperatureData = [
   { day: '3', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
   { day: '4', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
   { day: '5', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
-  { day: '6', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null }
+  { day: '6', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
+  { day: '7', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
+  { day: '8', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
+  { day: '9', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null }
 ];
 
 //create websocket connection
@@ -35,21 +38,22 @@ async function displayWeather(data, day) {
   const locationName = data.location.name;
   const locationRegion = data.location.region;
   let locationCountry = data.location.country;
-  if (locationCountry === 'United States of America') { locationCountry = 'USA'; }
-  resultsHeader.innerHTML = "Past weather for " + locationName + ", " + locationRegion + ", " + locationCountry + ":";
+  if (locationCountry.includes('United States of America')) { locationCountry = 'USA'; }
+  if (locationRegion === '') {resultsHeader.innerHTML = "Weather for " + locationName + ", " + locationCountry + ":";}
+  resultsHeader.innerHTML = "Weather for " + locationName + ", " + locationRegion + ", " + locationCountry + ":";
 
   const weatherItem = document.getElementById("day" + day);
 
   //set weather icon
   const weatherIcon = weatherItem.querySelector(".weather-icon");
   const iconText = data.forecast.forecastday[0].day.condition.text;
-  // console.log(iconText);
-  setWeatherIcon(iconText, weatherIcon);
+  setWeatherIcon(iconText.split(' ').join(''), weatherIcon);
 
   //set dates
   const weatherDate = weatherItem.querySelector(".date");
   const formattedDate = formatDate(data.forecast.forecastday[0].date);
   weatherDate.innerHTML = formattedDate;
+  console.log(formattedDate, ': ', iconText);
 
   const weatherData = weatherItem.querySelector(".weather-data");
 
@@ -78,7 +82,7 @@ async function displayWeather(data, day) {
   document.getElementById("weather-results").style.display = "flex";
 
   //stop gradient spin when form loaded
-  if (day === 6) { formLoaded = true; }
+  if (day === 9) { formLoaded = true; }
 
   return { error: false }
 }
@@ -90,7 +94,7 @@ async function submitForm() {
   gradientBorder();
 
   //send location to server
-  const location = document.getElementById('location').value;
+  const location = document.getElementById('location').value.split(' ').join('+');
   socket.send(location);
 }
 
@@ -99,16 +103,16 @@ function setWeatherIcon(name, weatherIcon) {
   const weatherIcons = {
     '☀️': ["Sunny"],
     '☁️': ["Cloudy", "Overcast"],
-    '🌨️': ["Moderate snow", "Patchy light snow", "Light snow", "Light snow showers"],
-    '🌧️': ["Patchy light rain with thunder", "Patchy light drizzle", "Light rain shower", "Light rain", "Patchy rain possible", "Moderate rain at times", "Light drizzle", "Light freezing rain", "Moderate rain", "Light sleet showers"],
-    '⛅': ["Partly cloudy"],
-    '❄️': ["Moderate or heavy snow showers", "Heavy snow", "Blizzard"],
-    '⛈️': ["Moderate or heavy rain with thunder", "Thundery outbreaks possible"],
-    '🌫️': ["Fog", "Freezing fog", "Mist"]
+    '🌨️': ["Moderatesnow", "Patchylightsnow", "Lightsnow", "Lightsnowshowers", "Blowingsnow"],
+    '🌧️': ["Patchyrainnearby", "Patchylightrainwiththunder", "Patchylightdrizzle", "Lightrainshower", "Lightrain", "Patchyrainpossible", "Moderaterainattimes", "Lightdrizzle", "Lightfreezingrain", "Moderaterain", "Lightsleetshowers"],
+    '⛅': ["Partlycloudy"],
+    '❄️': ["Moderateorheavysnowshowers", "Heavysnow", "Blizzard"],
+    '⛈️': ["Moderateorheavyrainwiththunder", "Thunderyoutbreakspossible"],
+    '🌫️': ["Fog", "Freezingfog", "Mist"]
   };
 
   //find the common emoji for the given weather name
-  const emoji = Object.keys(weatherIcons).find(key => weatherIcons[key].includes(name)) || '';
+  const emoji = Object.keys(weatherIcons).find(key => weatherIcons[key].includes(name)) || '☁️';
 
   weatherIcon.innerHTML = emoji;
 }
@@ -164,7 +168,8 @@ socket.onclose = function (event) {
 //handle weather data recieved from server
 socket.onmessage = function (event) {
   day++;
-  if (day === 7) { day = 1; }
+  //reset day counter for future form submits
+  if (day === 10) { day = 1; }
 
   const receivedMsg = event.data;
 
@@ -193,7 +198,7 @@ checkboxElement.addEventListener('change', () => {
 
 //change temp unit used in weather-grid
 function toggleTempUnit(u) {
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 9; i++) {
     const weatherItem = document.getElementById("day" + i);
     const weatherData = weatherItem.querySelector(".weather-data");
     const maxTemp = weatherData.querySelector(".max-temp");

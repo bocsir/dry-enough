@@ -36,16 +36,34 @@ app.use(bodyParser.json());
 
 //make API calls, send successful responses immediately to client
 async function callApi(location) {
-    //make API calls for last 6 days weather
-    for (let i = 1; i <= 6; i++) {
+    //make API calls for weather over multiple days
+    for (let i = 8; i >= 0; i--) {
+
         //create URL
-        const weatherApiUrl =
-        "https://api.weatherapi.com/v1/history.json?key=" +
-        apiKey +
-        "&q=" +
-        location +
-        "&unixdt=" +
-        (Math.floor(Date.now() / 1000) - 86400 * i);
+        let weatherApiUrl;
+        //user forecast if first three days
+        if (i <= 3) {
+            weatherApiUrl =
+            "https://api.weatherapi.com/v1/forecast.json?key=" +
+            apiKey +
+            "&q=" +
+            location +
+            "&unixdt=" +
+            //unix time in ms / 1000 = unix time in s. 86400 = 1 day in s
+            (Math.floor((Date.now() / 1000) + (86400*3)) - 86400 * i);
+    
+        } else {
+            weatherApiUrl =
+            "https://api.weatherapi.com/v1/history.json?key=" +
+            apiKey +
+            "&q=" +
+            location +
+            "&unixdt=" +
+            //unix time in ms / 1000 = unix time in s. 86400 = 1 day in s
+            (Math.floor(Date.now() / 1000) - 86400 * i);
+        }
+
+        console.log(weatherApiUrl);
 
         //make API call
         try {

@@ -171,6 +171,10 @@ article #note {
     gap: 15px;
 }
 
+#day6 {
+    border: 1px solid rgb(109, 0, 0);
+}
+
 #results-header {
     max-width: 85vw;
     text-align: center;
