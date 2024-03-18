@@ -53,7 +53,7 @@ async function displayWeather(data, day) {
   const weatherDate = weatherItem.querySelector(".date");
   const formattedDate = formatDate(data.forecast.forecastday[0].date);
   weatherDate.innerHTML = formattedDate;
-  console.log(formattedDate, ': ', iconText);
+  //console.log(formattedDate, ': ', iconText);
 
   const weatherData = weatherItem.querySelector(".weather-data");
 
