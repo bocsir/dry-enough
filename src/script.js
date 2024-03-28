@@ -27,7 +27,7 @@ let temperatureData = [
 
 //create websocket connection
 const socket = new WebSocket('wss://dry-enough.onrender.com');
-//const socket = new WebSocket('ws://localhost:5500');
+// const socket = new WebSocket('ws://localhost:5500');
 
 async function displayWeather(data, day) {
   apiData = data;
