@@ -36,22 +36,6 @@ app.use(bodyParser.json());
 
 //make API calls, send successful responses immediately to client
 async function callApi(location) {
-    //making calls for 9 days
-    // for (let i = 9; i > 0; i--) {
-    //     let callType, unixTime;
-    //     //user forecast if first three days
-    //     if (i <= 3) {
-    //         callType = "https://api.weatherapi.com/v1/forecast.json?key="
-    //         //unix time in ms / 1000 = unix time in s. 86400 = 1 day in s
-    //         unixTime = (Math.floor((Date.now() / 1000)) + (86400 * (4-i)));
-    //     } else {
-    //         callType = "https://api.weatherapi.com/v1/history.json?key="
-    //         //unix time in ms / 1000 = unix time in s. 86400 = 1 day in s
-    //         unixTime = (Math.floor(Date.now() / 1000) - (86400 * (i-4)));
-    //     }
-
-    //     //build URL
-    //     const weatherApiUrl = callType + apiKey + "&q=" + location + "&unixdt=" + unixTime;
 
         //get lat and lon from location with API call and build URL
         let weatherApiUrl;
