@@ -13,8 +13,8 @@
 <body>
     <div id="body-border">
         <header>
-            <h1>IS IT DRY ENOUGH TO CLIMB?</h1>
-            <p>input any city name or zip code to get the last few days of weather data</p>
+            <h1>IS IT DRY ENOUGH?</h1>
+            <p>input any location name or zip code to get PAST AND FUTURE weather data</p>
             <hr>
         </header>
     
@@ -23,7 +23,7 @@
                 <form id="form" action="/submit" method="POST">
                     
                     <label for="location">location name or zip</label>
-                    <input type="text" id="location" name="location" placeholder="ex: Boulder / 80302">
+                    <input type="text" id="location" name="location" placeholder="ex: New York City/ 10007">
                     <input type="submit" id="submit" value="Submit" onClick="submitForm(); return false">
                 </form>    
             </section>   
@@ -39,10 +39,162 @@
                 </div>
             
                 <div id="weather-grid">
-                    <div class="weather-item" id="day1">
+                    <div class="weather-item-row">
+                        <div class="weather-item" id="day1">
+                            <div class="inline-span">
+                                <p class="date"></p>
+                                <p class="weather-icon"></p>
+                                <p class="percip-percent"></p>
+                            </div>
+    
+                            <div class="weather-data">
+                                <div class="percip">
+                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                </div>
+                                <p class="max-temp"></p>
+                                <p class="min-temp"></p>
+                            </div>
+                        </div>
+                        <div class="weather-item" id="day2">
+                            <div class="inline-span">
+                                <p class="date"></p>
+                                <p class="weather-icon"></p>
+                                <p class="percip-percent"></p>
+
+                            </div>
+    
+                            <div class="weather-data">
+                                <div class="percip">
+                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                </div>
+                                <p class="max-temp"></p>
+                                <p class="min-temp"></p>
+                            </div>
+                        </div>
+                        <div class="weather-item" id="day3">
+                            <div class="inline-span">
+                                <p class="date"></p>
+                                <p class="weather-icon"></p>
+                                <p class="percip-percent"></p>
+
+                            </div>
+    
+                            <div class="weather-data">
+                                <div class="percip">
+                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                </div>
+                                <p class="max-temp"></p>
+                                <p class="min-temp"></p>
+                            </div>
+                        </div>
+    
+                    </div>
+
+                    <div id="row2" class="weather-item-row">
+                        <div class="weather-item" id="day4">   
+                            <div id="day4-header">                         
+                                <div class="inline-span">
+                                    <p class="date"></p>
+                                    <p class="weather-icon"></p>
+                                    <p class="percip-percent"></p>
+
+                                </div>
+        
+                                <div class="weather-data">
+                                    <div class="percip">
+                                        <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                    </div>
+                                    <p class="max-temp"></p>
+                                    <p class="min-temp"></p>
+                                </div>
+                            </div>
+                            <div id="vertical-divider"></div>
+                            <div id="current-day">
+                                <p>NOW:</p>
+                                <p id="current-temp">55</p>
+                                <p id="current-weather">Cloudy</p>
+                            </div>
+    
+                        </div>
+                        <div class="weather-item" id="day5">
+                            <div class="inline-span">
+                                <p class="date"></p>
+                                <p class="weather-icon"></p>
+                                <p class="percip-percent"></p>
+
+                            </div>
+    
+                            <div class="weather-data">
+                                <div class="percip">
+                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                </div>
+                                <p class="max-temp"></p>
+                                <p class="min-temp"></p>
+                            </div>
+                        </div>
+    
+                    </div>
+                    <div class="weather-item-row">
+                        <div class="weather-item" id="day6">
+                            <div class="inline-span">
+                                <p class="date"></p>
+                                <p class="weather-icon"></p>
+                                <p class="percip-percent"></p>
+
+                            </div>
+    
+                            <div class="weather-data">
+                                <div class="percip">
+                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                </div>
+                                <p class="max-temp"></p>
+                                <p class="min-temp"></p>
+                            </div>
+                        </div>
+                        <div class="weather-item" id="day7">
+                            <div class="inline-span">
+                                <p class="date"></p>
+                                <p class="weather-icon"></p>
+                                <p class="percip-percent"></p>
+
+                            </div>
+    
+                            <div class="weather-data">
+                                <div class="percip">
+                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                </div>
+                                <p class="max-temp"></p>
+                                <p class="min-temp"></p>
+                            </div>
+                        </div>
+                        <div class="weather-item" id="day8">
+                            <div class="inline-span">
+                                <p class="date"></p>
+                                <p class="weather-icon"></p>
+                                <p class="percip-percent"></p>
+
+                            </div>
+    
+                            <div class="weather-data">
+                                <div class="percip">
+                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                </div>
+                                <p class="max-temp"></p>
+                                <p class="min-temp"></p>
+                            </div>
+                        </div>
+    
+                    </div>
+
+
+                    <div class="weather-item-row">
+                        
+                    <div class="weather-item" id="day9">
                         <div class="inline-span">
                             <p class="date"></p>
                             <p class="weather-icon"></p>
+                            <p class="percip-percent"></p>
+
                         </div>
 
                         <div class="weather-data">
@@ -53,125 +205,55 @@
                             <p class="min-temp"></p>
                         </div>
                     </div>
-                    <div class="weather-item" id="day2">
-                        <div class="inline-span">
-                            <p class="date"></p>
-                            <p class="weather-icon"></p>
-                        </div>
+                
+                <div class="weather-item" id="day10">
+                    <div class="inline-span">
+                        <p class="date"></p>
+                        <p class="weather-icon"></p>
+                        <p class="percip-percent"></p>
 
-                        <div class="weather-data">
-                            <div class="percip">
-                                <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                            </div>
-                            <p class="max-temp"></p>
-                            <p class="min-temp"></p>
-                        </div>
                     </div>
-                    <div class="weather-item" id="day3">
-                        <div class="inline-span">
-                            <p class="date"></p>
-                            <p class="weather-icon"></p>
-                        </div>
 
-                        <div class="weather-data">
-                            <div class="percip">
-                                <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                            </div>
-                            <p class="max-temp"></p>
-                            <p class="min-temp"></p>
+                    <div class="weather-data">
+                        <div class="percip">
+                            <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
                         </div>
+                        <p class="max-temp"></p>
+                        <p class="min-temp"></p>
                     </div>
-                    <div class="weather-item" id="day4">
-                        <div class="inline-span">
-                            <p class="date"></p>
-                            <p class="weather-icon"></p>
-                        </div>
+                </div>
+                <div class="weather-item" id="day11">
+                    <div class="inline-span">
+                        <p class="date"></p>
+                        <p class="weather-icon"></p>
+                        <p class="percip-percent"></p>
 
-                        <div class="weather-data">
-                            <div class="percip">
-                                <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                            </div>
-                            <p class="max-temp"></p>
-                            <p class="min-temp"></p>
-                        </div>
                     </div>
-                    <div class="weather-item" id="day5">
-                        <div class="inline-span">
-                            <p class="date"></p>
-                            <p class="weather-icon"></p>
-                        </div>
 
-                        <div class="weather-data">
-                            <div class="percip">
-                                <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                            </div>
-                            <p class="max-temp"></p>
-                            <p class="min-temp"></p>
+                    <div class="weather-data">
+                        <div class="percip">
+                            <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
                         </div>
-                    </div>
-                    <div class="weather-item" id="day6">
-                        <div class="inline-span">
-                            <p class="date"></p>
-                            <p class="weather-icon"></p>
-                        </div>
-
-                        <div class="weather-data">
-                            <div class="percip">
-                                <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                            </div>
-                            <p class="max-temp"></p>
-                            <p class="min-temp"></p>
-                        </div>
-                    </div>
-                    <div class="weather-item" id="day7">
-                        <div class="inline-span">
-                            <p class="date"></p>
-                            <p class="weather-icon"></p>
-                        </div>
-
-                        <div class="weather-data">
-                            <div class="percip">
-                                <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                            </div>
-                            <p class="max-temp"></p>
-                            <p class="min-temp"></p>
-                        </div>
-                    </div><div class="weather-item" id="day8">
-                        <div class="inline-span">
-                            <p class="date"></p>
-                            <p class="weather-icon"></p>
-                        </div>
-
-                        <div class="weather-data">
-                            <div class="percip">
-                                <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                            </div>
-                            <p class="max-temp"></p>
-                            <p class="min-temp"></p>
-                        </div>
-                    </div><div class="weather-item" id="day9">
-                        <div class="inline-span">
-                            <p class="date"></p>
-                            <p class="weather-icon"></p>
-                        </div>
-
-                        <div class="weather-data">
-                            <div class="percip">
-                                <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                            </div>
-                            <p class="max-temp"></p>
-                            <p class="min-temp"></p>
-                        </div>
+                        <p class="max-temp"></p>
+                        <p class="min-temp"></p>
                     </div>
                 </div>
 
+                    </div>
+
+            </div>    
             </section>
+
+
+            
             <article>
                 <p id="note">
                     <strong>Note:</strong><br> Since time to dry varies by rock type, check or ask for 
                     information about when it is safe to climb at your crag. Find info on 
                     <a href="https://www.mountainproject.com/">mountainproject</a>.<br><br>
-                    Powered by <a href="https://www.weatherapi.com/" title="Weather API">WeatherAPI.com</a>
+                    This site is powered by: <a href="https://open-meteo.com/" title="Weather API">open-meteo.com</a>, 
+                    <a href="https://openweathermap.org/" title="Weather API">openweathermap.org</a>, 
+                    and <a href="https://locationiq.com/" title="Weather API">locationiq.com</a>.
                 </p>
             </article>
         </main>

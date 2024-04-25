@@ -1,19 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
-  console.log('DOM loaded');
   document.getElementById("weather-results").style.display = "none";
 
   //ensure checkbox is unchecked after page refresh
   if(document.querySelector(".slider-checkbox").checked) {
     document.querySelector(".slider-checkbox").checked = false;
-}
+  }
 });
 
-
 let formLoaded;
-console.log('test log');
 let day = 0;
 
+//object for temperature unit toggle
 let temperatureData = [
+  { day: '0', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
   { day: '1', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
   { day: '2', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
   { day: '3', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
@@ -22,109 +21,229 @@ let temperatureData = [
   { day: '6', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
   { day: '7', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
   { day: '8', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
-  { day: '9', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null }
+  { day: '9', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null },
+  { day: '10', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null }
 ];
 
 //create websocket connection
-const socket = new WebSocket('wss://dry-enough.onrender.com');
-// const socket = new WebSocket('ws://localhost:5500');
+//const socket = new WebSocket('wss://dry-enough.onrender.com');
+const socket = new WebSocket('ws://localhost:5500');
+
+function showLocation(locationObj) {
+    //set results header to show location
+    const resultsHeader = document.getElementById("results-header");
+
+    const locationName = locationObj[0].name;
+    const locationRegion = locationObj[0].state;
+    const locationCountry = locationObj[0].country;
+
+    let headerString = "Weather for ";
+    if (locationName) {
+        headerString += locationName;
+    }
+    if (locationRegion) {
+        headerString += ", " + locationRegion;
+    }
+    if (locationCountry) {
+        headerString += ", " + locationCountry;
+    }
+    headerString += ":";
+    resultsHeader.innerHTML = headerString    
+}
 
 async function displayWeather(data, day) {
-  apiData = data;
-  document.getElementById("weather-grid").style.display = "grid";
+  if (day === 11) {
+    //stop gradient spin
+    //show weather grid
+    document.getElementById("weather-grid").style.display = "grid";
+    document.getElementById("weather-results").style.display = "flex";
+    popLoader();
+    return;
+  }
 
-  //set results header
-  const resultsHeader = document.getElementById("results-header");
-  const locationName = data.location.name;
-  const locationRegion = data.location.region;
-  let locationCountry = data.location.country;
-  if (locationCountry.includes('United States of America')) { locationCountry = 'USA'; }
-  if (locationRegion === '') {resultsHeader.innerHTML = "Weather for " + locationName + ", " + locationCountry + ":";}
-  resultsHeader.innerHTML = "Weather for " + locationName + ", " + locationRegion + ", " + locationCountry + ":";
+  if (day === 3) {
+    const currentTemp = document.getElementById("current-temp");
+    currentTemp.innerHTML = data.current.temperature_2m;
 
-  const weatherItem = document.getElementById("day" + day);
+    setCurrentWeatherStatus(data.current.weather_code);
+  }
 
-  //set weather icon
+  const nextDay = day+1;
+  const weatherItem = document.getElementById("day" + nextDay);
+
+  //set weather icon emoji
   const weatherIcon = weatherItem.querySelector(".weather-icon");
-  const iconText = data.forecast.forecastday[0].day.condition.text;
-  setWeatherIcon(iconText.split(' ').join(''), weatherIcon);
+  setWeatherIcon(data.daily.weather_code[day], weatherIcon);
 
   //set dates
   const weatherDate = weatherItem.querySelector(".date");
-  const formattedDate = formatDate(data.forecast.forecastday[0].date);
+  const formattedDate = formatDate(data.daily.time[day], day);
   weatherDate.innerHTML = formattedDate;
-  //console.log(formattedDate, ': ', iconText);
 
+  //set percipitation sum
   const weatherData = weatherItem.querySelector(".weather-data");
-
-  //set percipitation
-  const precipInches = data.forecast.forecastday[0].day.totalprecip_in;
   const percipData = weatherData.querySelector(".percip-data");
+  const precipInches = data.daily.precipitation_sum[day];
   percipData.innerHTML = " " + precipInches + " in.";
 
-  //set max temp
+  //set max and min temps
   const maxTempF = weatherData.querySelector(".max-temp");
-
-  //set min temp
   const minTempF = weatherData.querySelector(".min-temp");
 
+  const maxF = data.daily.temperature_2m_max[day];
+  const minF = data.daily.temperature_2m_min[day];
+
   //display temp
-  maxTempF.innerHTML = data.forecast.forecastday[0].day.maxtemp_f;
-  minTempF.innerHTML = data.forecast.forecastday[0].day.mintemp_f;  
+  maxTempF.innerHTML = maxF;
+  minTempF.innerHTML = minF;  
 
-  //put values in temperatureData object
-  temperatureData[day-1].maxFahrenheit = data.forecast.forecastday[0].day.maxtemp_f;
-  temperatureData[day-1].minFahrenheit = data.forecast.forecastday[0].day.mintemp_f;
-  temperatureData[day-1].maxCelsius = data.forecast.forecastday[0].day.maxtemp_c;
-  temperatureData[day-1].minCelsius = data.forecast.forecastday[0].day.mintemp_c;
+  //put values for max and min celsius and fahrenheit in temperatureData object
+  temperatureData[day].maxFahrenheit = maxF;
+  temperatureData[day].minFahrenheit = minF;
+  temperatureData[day].maxCelsius = ((maxF - 32) / 1.8).toFixed(1);
+  temperatureData[day].minCelsius = ((minF - 32) / 1.8).toFixed(1);
 
-  //show weather grid
-  document.getElementById("weather-results").style.display = "flex";
+  //set card border color
+  const percentage = data.daily.precipitation_probability_max[day];
+  const percipPercent = weatherItem.querySelector(".percip-percent");
+  percipPercent.innerHTML = percentage + "%";
+  const hue = 240;
+  const lightness = 100 - (percentage / 2);
+  const saturation = 100;
+  const color = 'hsla(' + hue + ', ' + saturation + '%, ' + lightness + '%, .8)';
+  weatherItem.style.borderColor = color;
+  weatherItem.style.backgroundColor = 'hsla(' + hue + ', ' + saturation + '%, ' + lightness + '%, .15)';
 
-  //stop gradient spin when form loaded
-  if (day === 9) { formLoaded = true; }
-
+  //call to fill in next days info
+  displayWeather(data, day + 1);
   return { error: false }
+}
+
+function wait(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function popLoader() {
+console.log('popping loader');
+  for (let i = 1; i < 12; i++) {
+      await wait(200);
+      console.log('showing day' + i);
+      const el = document.getElementById("day" + i);
+      el.style.display = "flex";
+
+      let scale = .3;
+
+        async function transitionFrame() {
+          scale += .1;
+          await wait(10);
+          el.style.scale = scale;
+          console.log('scaling');          
+
+          if (scale < 1) {
+            transitionFrame();
+          } else {
+            await wait(10);
+
+            el.style.scale = (scale-.1);
+
+          }
+        }
+
+        transitionFrame()
+
+
+  
+
+
+  }
+  formLoaded = true;
 }
 
 //handle submit button press
 async function submitForm() {
+  document.getElementById("weather-results").style.display = "none";
+  document.getElementById("weather-grid").style.display = "none";
+  for (let i = 1; i < 12; i++) {
+    const el = document.getElementById("day" + i);
+    el.style.display = "none";
+  }
   //start gradient loading animation
   formLoaded = false;
   gradientBorder();
+
+  const currentTempUnit = document.getElementById("slider-text").innerHTML;
+
+  if(document.querySelector(".slider-checkbox").checked) {
+    document.querySelector(".slider-checkbox").checked = false;
+    swapTempUnit();
+  }
 
   //send location to server
   const location = document.getElementById('location').value.split(' ').join('+');
   socket.send(location);
 }
 
+const daysOfTheWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
 //set weather icon based on API calls icon text
-function setWeatherIcon(name, weatherIcon) {
-  const weatherIcons = {
-    '☀️': ["Sunny"],
-    '☁️': ["Cloudy", "Overcast"],
-    '🌨️': ["Moderatesnow", "Patchylightsnow", "Lightsnow", "Lightsnowshowers", "Blowingsnow"],
-    '🌧️': ["Patchyrainnearby", "Patchylightrainwiththunder", "Patchylightdrizzle", "Lightrainshower", "Lightrain", "Patchyrainpossible", "Moderaterainattimes", "Lightdrizzle", "Lightfreezingrain", "Moderaterain", "Lightsleetshowers"],
-    '⛅': ["Partlycloudy"],
-    '❄️': ["Moderateorheavysnowshowers", "Heavysnow", "Blizzard"],
-    '⛈️': ["Moderateorheavyrainwiththunder", "Thunderyoutbreakspossible"],
-    '🌫️': ["Fog", "Freezingfog", "Mist"]
-  };
+function setWeatherIcon(code, weatherIcon) {
 
+  //☀️☁️🌨️⛅❄️⛈️🌫️
   //find the common emoji for the given weather name
-  const emoji = Object.keys(weatherIcons).find(key => weatherIcons[key].includes(name)) || '☁️';
 
+  emojiMap = {
+    "🌧️": [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82],
+    "🌨️": [71, 73, 75, 77, 85, 86],
+    "⛈️": [95, 96, 99],
+    "🌫️": [45, 48],
+    "☀️": [0],
+    "⛅": [1, 2],
+    "☁️": [3],
+  }
+
+  const emoji = Object.keys(emojiMap).find(key => emojiMap[key].includes(code));
   weatherIcon.innerHTML = emoji;
 }
 
-//change order of date, not using year value
-function formatDate(date) {
-  let newDate = date.slice(2).replace(/-/g, "");
+function setCurrentWeatherStatus(code) {
 
-  const lastTwo = newDate.slice(-2); //day
-  const middle = newDate.slice(2, -2); //month
-  newDate = middle + "<br>" + lastTwo;
-  return newDate;
+  weatherStrings = {
+    "Raining": [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82],
+    "Snowing": [71, 73, 75, 77, 85, 86],
+    "Thunder storm": [95, 96, 99],
+    "Foggy": [45, 48],
+    "Sunny": [0],
+    "Partly cloudy": [1, 2],
+    "Cloudy": [3],
+  }
+
+  const weatherStatus = Object.keys(weatherStrings).find(key => weatherStrings[key].includes(code));
+  const currentWeatherStatus = document.getElementById("current-weather");
+  currentWeatherStatus.innerHTML = weatherStatus;
+}
+
+//change order of date, not using year value
+function formatDate(date, day) {
+  const currentDay = new Date().toLocaleString('en-us', {  weekday: 'long' })
+
+  let currentDayIndex;
+  for (let i = 6; i < 13; i++) {
+    if (daysOfTheWeek[i] === currentDay) {
+      currentDayIndex = i;
+    }
+  }
+
+  const offset = day - 3;
+  let dayNameStr = daysOfTheWeek[currentDayIndex + offset];
+  dayNameStr = dayNameStr.slice(0,3);
+
+  let undashedDate = date.slice(4).replace(/-/g, "");
+
+  const dayOfMonth = undashedDate.slice(-2); //day
+  const dateString = dayOfMonth + "<br>" + dayNameStr;
+  return dateString;
 }
 
 //spin linear gradient until form is loaded
@@ -140,7 +259,7 @@ async function gradientBorder() {
     borderElement.style.background =
       "linear-gradient(" +
       deg +
-      "deg, rgb(107, 20, 110) 30%, rgba(255, 255, 0, 0.671) 50%, rgb(109, 0, 0) 70%)";
+      "deg,  rgba(0, 0, 161, 0.3) 30%,rgba(255, 255, 255, .6) 40%,rgba(89, 89, 255, 0.8) 60%)";
   }
 }
 
@@ -167,23 +286,29 @@ socket.onclose = function (event) {
 
 //handle weather data recieved from server
 socket.onmessage = function (event) {
-  day++;
-  //reset day counter for future form submits
-  if (day === 10) { day = 1; }
 
   const receivedMsg = event.data;
+  if (receivedMsg.includes('location:')) {
+    let locationStr = receivedMsg.slice(10);
+    locationObj = JSON.parse(locationStr);
 
-  //display weather on successful response, ask user to reenter location on bad response
-  if (receivedMsg === 'bad response') {
-    showError();
+    showLocation(locationObj);
   } else {
-    displayWeather(JSON.parse(receivedMsg), day);
+    //display weather on successful response, ask user to reenter location on bad response
+    if (receivedMsg === 'bad response') {
+      showError();
+    } else {
+      //display weather using JSON data from fruitfull API call
+      displayWeather(JSON.parse(receivedMsg), 0);
+    }
   }
 }
 
 //event listener for temperature toggle switch
 const checkboxElement = document.querySelector('.slider-checkbox');
-checkboxElement.addEventListener('change', () => {
+checkboxElement.addEventListener('change', swapTempUnit);
+
+function swapTempUnit() {
   const spanElement = document.getElementById('slider-text');
 
   //toggle unit shown in temp toggle switch and weather grid
@@ -194,22 +319,36 @@ checkboxElement.addEventListener('change', () => {
       spanElement.innerHTML = '°F';
       toggleTempUnit('°F');
   }
-})
+}
 
 //change temp unit used in weather-grid
 function toggleTempUnit(u) {
-  for (let i = 1; i <= 9; i++) {
-    const weatherItem = document.getElementById("day" + i);
+  for (let i = 0; i < 11; i++) {
+    const nextDay = i + 1;
+    const weatherItem = document.getElementById("day" + nextDay);
     const weatherData = weatherItem.querySelector(".weather-data");
     const maxTemp = weatherData.querySelector(".max-temp");
     const minTemp = weatherData.querySelector(".min-temp");
 
     if (u === '°F') {
-      maxTemp.innerHTML = temperatureData[i-1].maxFahrenheit;
-      minTemp.innerHTML = temperatureData[i-1].minFahrenheit;
+      maxTemp.innerHTML = temperatureData[i].maxFahrenheit;
+      minTemp.innerHTML = temperatureData[i].minFahrenheit;
+
     } else {
-      maxTemp.innerHTML = temperatureData[i-1].maxCelsius;
-      minTemp.innerHTML = temperatureData[i-1].minCelsius;
+      maxTemp.innerHTML = temperatureData[i].maxCelsius;
+      minTemp.innerHTML = temperatureData[i].minCelsius;
+
     }
   }
+
+  const currentTempEl = document.getElementById("current-temp");
+  let currentTemp = parseFloat(currentTempEl.innerHTML);
+
+  if (u === '°F') {
+    currentTempEl.innerHTML = ((currentTemp*1.8)+32).toFixed(1);
+  } else {
+    console.log('switching to C and the currentTemp is ' + currentTemp);
+    currentTempEl.innerHTML = ((currentTemp - 32) / 1.8).toFixed(1);
+  }
 }
+
