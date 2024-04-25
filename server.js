@@ -60,7 +60,6 @@ async function callApi(location) {
             const loc = location.split("+").join("%20");
             const coordsResponse = await fetch("https://us1.locationiq.com/v1/search?key=" + forwardGeoKey + "&q=" + loc + "&format=json&");
             const coordsData = await coordsResponse.json();
-            console.log(coordsData);
             let lat;
             let lon;
 

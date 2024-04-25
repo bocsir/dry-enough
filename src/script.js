@@ -25,9 +25,23 @@ let temperatureData = [
   { day: '10', maxFahrenheit: null, minFahrenheit: null, maxCelsius: null, minCelsius: null }
 ];
 
+let percipData = [
+  { day: '0', percipInches: null , percipMM: null },
+  { day: '1', percipInches: null , percipMM: null },
+  { day: '2', percipInches: null , percipMM: null },
+  { day: '3', percipInches: null , percipMM: null },
+  { day: '4', percipInches: null , percipMM: null },
+  { day: '5', percipInches: null , percipMM: null },
+  { day: '6', percipInches: null , percipMM: null },
+  { day: '7', percipInches: null , percipMM: null },
+  { day: '8', percipInches: null , percipMM: null },
+  { day: '9', percipInches: null , percipMM: null },
+  { day: '10', percipInches: null , percipMM: null },  
+]
+
 //create websocket connection
-const socket = new WebSocket('wss://dry-enough.onrender.com');
-//const socket = new WebSocket('ws://localhost:5500');
+//const socket = new WebSocket('wss://dry-enough.onrender.com');
+const socket = new WebSocket('ws://localhost:5500');
 
 function showLocation(locationObj) {
     //set results header to show location
@@ -82,9 +96,12 @@ async function displayWeather(data, day) {
 
   //set percipitation sum
   const weatherData = weatherItem.querySelector(".weather-data");
-  const percipData = weatherData.querySelector(".percip-data");
+  const percipEl = weatherData.querySelector(".percip-data");
   const precipInches = data.daily.precipitation_sum[day];
-  percipData.innerHTML = " " + precipInches + " in.";
+  percipEl.innerHTML = " " + precipInches + " in.";
+
+  percipData[day].percipInches = precipInches;
+  percipData[day].percipMillimeters = (precipInches * 25.4).toFixed(1);
 
   //set max and min temps
   const maxTempF = weatherData.querySelector(".max-temp");
@@ -104,9 +121,18 @@ async function displayWeather(data, day) {
   temperatureData[day].minCelsius = ((minF - 32) / 1.8).toFixed(1);
 
   //set card border color
-  const percentage = data.daily.precipitation_probability_max[day];
+  let percentage = data.daily.precipitation_probability_max[day];
   const percipPercent = weatherItem.querySelector(".percip-percent");
-  percipPercent.innerHTML = percentage + "%";
+
+  if(day >= 3) {
+    percipPercent.innerHTML = percentage + "%";
+  } else {
+    if(precipInches === 0) {
+      percentage = 0;
+    }
+
+  }
+
   const hue = 240;
   const lightness = 100 - (percentage / 2);
   const saturation = 100;
@@ -126,10 +152,8 @@ function wait(ms) {
 }
 
 async function popLoader() {
-console.log('popping loader');
   for (let i = 1; i < 12; i++) {
       await wait(200);
-      console.log('showing day' + i);
       const el = document.getElementById("day" + i);
       el.style.display = "flex";
 
@@ -139,7 +163,6 @@ console.log('popping loader');
           scale += .1;
           await wait(10);
           el.style.scale = scale;
-          console.log('scaling');          
 
           if (scale < 1) {
             transitionFrame();
@@ -152,10 +175,6 @@ console.log('popping loader');
         }
 
         transitionFrame()
-
-
-  
-
 
   }
   formLoaded = true;
@@ -329,15 +348,17 @@ function toggleTempUnit(u) {
     const weatherData = weatherItem.querySelector(".weather-data");
     const maxTemp = weatherData.querySelector(".max-temp");
     const minTemp = weatherData.querySelector(".min-temp");
-
+    const percipAmount = weatherData.querySelector(".percip-data");
     if (u === '°F') {
       maxTemp.innerHTML = temperatureData[i].maxFahrenheit;
       minTemp.innerHTML = temperatureData[i].minFahrenheit;
 
+      percipAmount.innerHTML = percipData[i].percipInches + " in";
     } else {
       maxTemp.innerHTML = temperatureData[i].maxCelsius;
       minTemp.innerHTML = temperatureData[i].minCelsius;
-
+      
+      percipAmount.innerHTML = percipData[i].percipMillimeters + " mm";
     }
   }
 
@@ -347,7 +368,6 @@ function toggleTempUnit(u) {
   if (u === '°F') {
     currentTempEl.innerHTML = ((currentTemp*1.8)+32).toFixed(1);
   } else {
-    console.log('switching to C and the currentTemp is ' + currentTemp);
     currentTempEl.innerHTML = ((currentTemp - 32) / 1.8).toFixed(1);
   }
 }
