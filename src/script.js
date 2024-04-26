@@ -40,8 +40,8 @@ let percipData = [
 ]
 
 //create websocket connection
-const socket = new WebSocket('wss://dry-enough.onrender.com');
-//const socket = new WebSocket('ws://localhost:5500');
+//const socket = new WebSocket('wss://dry-enough.onrender.com');
+const socket = new WebSocket('ws://localhost:5500');
 
 function showLocation(locationObj) {
     //set results header to show location
@@ -283,7 +283,7 @@ async function gradientBorder() {
 }
 
 function showError() {
-  document.getElementById("results-header").innerHTML = "Error: check your input";
+  document.getElementById("results-header").innerHTML = "Error: location not found";
   document.getElementById("results-header").style.display = "block";
   document.getElementById("weather-results").style.display = "flex";
   document.getElementById("weather-grid").style.display = "none";

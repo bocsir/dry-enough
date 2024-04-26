@@ -14,8 +14,7 @@ html {
 }
 
 :root {
-    color-scheme: only light;
-
+    overflow-x: hidden;
 }
 
 body {
@@ -238,17 +237,17 @@ article #note {
 
 .date {
     position: absolute;
-    left: -30px;
-    top: -4px;
+    left: -61%;
+    top: -12%;
     font-size: 0.8em;
 }
 
 #day4 .date {
-    left: -3px;
+    left: -5%;
 }
 
 #day4 .percip-percent {
-    right: -149px;
+    right: -147%;
 }
 
 
@@ -261,8 +260,8 @@ article #note {
 
 .percip-percent {
     position: absolute;
-    right: -30px;
-    top: -4px;
+    right: -69%;
+    top: -12%;
     font-size: 0.8em;
 }
 
@@ -363,7 +362,7 @@ article #note {
 
     #weather-grid {
         scale: .8;
-        margin-top: 0;
+        margin-top: -40px;
     }
 
     /* #weather-grid {
