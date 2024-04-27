@@ -250,17 +250,21 @@ article #note {
     right: -147%;
 }
 
+#day4 .inline-span {
+    max-width: none;
+}
 
 .inline-span {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    max-width: 52px;
 }
 
 .percip-percent {
     position: absolute;
-    right: -69%;
+    right: -63%;
     top: -12%;
     font-size: 0.8em;
 }
