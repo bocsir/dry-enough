@@ -40,8 +40,8 @@ let percipData = [
 ]
 
 //create websocket connection
-//const socket = new WebSocket('wss://dry-enough.onrender.com');
-const socket = new WebSocket('ws://localhost:5500');
+const socket = new WebSocket('wss://dry-enough.onrender.com');
+//const socket = new WebSocket('ws://localhost:5500');
 
 function showLocation(locationObj) {
     //set results header to show location
