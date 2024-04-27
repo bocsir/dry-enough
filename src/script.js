@@ -39,9 +39,16 @@ let percipData = [
   { day: '10', percipInches: null , percipMM: null },  
 ]
 
-//create websocket connection
+//create websocket connection. will use local if url doesnt work
+
 const socket = new WebSocket('wss://dry-enough.onrender.com');
-//const socket = new WebSocket('ws://localhost:5500');
+
+socket.onerror = function(e) {
+  console.error('Websocket error: ', e);
+
+  socket.close;
+  const socket = new WebSocket('ws://localhost:5500');
+}
 
 function showLocation(locationObj) {
     //set results header to show location

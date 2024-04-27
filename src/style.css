@@ -162,7 +162,6 @@ article #note {
     margin: 0 10px;
     padding: 10px;
     border: 2px solid rgb(129, 122, 122);
-    /* border: 1px solid rgb(240, 108, 0); */
     width: 8rem;
     border-radius: 10px;
     display: none;
@@ -182,7 +181,6 @@ article #note {
     flex-direction: row;
     justify-content: space-evenly;
 }
-
 
 #day4-header {
     position: relative;
@@ -216,7 +214,6 @@ article #note {
 #weather-grid {
     margin-top: 30px;
     display: grid;
-    /* grid-template-columns: auto auto auto; */
     gap: 15px;
 }
 
@@ -231,23 +228,21 @@ article #note {
 }
 
 .weather-icon {
-    font-size: 2.5rem;
-    margin: 0;
+    font-size: 1.8rem;
+    margin: -5px;
 }
 
 .date {
-    position: absolute;
-    left: -61%;
-    top: -12%;
-    font-size: 0.8em;
+    margin-right: 19px;
+    font-size: 0.9em;
 }
 
-#day4 .date {
-    left: -5%;
-}
 
-#day4 .percip-percent {
-    right: -147%;
+.emoji-percent-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 #day4 .inline-span {
@@ -263,10 +258,8 @@ article #note {
 }
 
 .percip-percent {
-    position: absolute;
-    right: -63%;
-    top: -12%;
     font-size: 0.8em;
+    margin-bottom: 5px;
 }
 
 .weather-data {
