@@ -1,0 +1,44 @@
+@font-face {
+    font-family: "mono";
+    src: url(../fonts/MonoRegular-jEmAR.ttf) format("truetype");
+}
+
+:root {
+    overflow-x: hidden;
+}
+
+body {
+    font-family: "mono", monospace;
+    background-color: black;
+    color: white;
+    min-height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4em;
+}
+
+#body-border {
+    margin: 20px 0;
+    position: relative;
+    width: 96%;
+    height: 96%;
+    min-height: 95vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border: 6px solid rgba(99, 94, 94, 0.856);
+    background-color: #1c1515;
+    border-radius: 30px;
+    box-shadow: 0px 0px 4px 1px black;
+}
+
+.chart {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80vw;
+    height: 25vh;
+}

@@ -170,6 +170,7 @@ article #note {
     text-align: left;
     scale: .3;
     max-height: 156px;
+    cursor: pointer;
 }
 
 .weather-item:hover {
@@ -236,7 +237,6 @@ article #note {
     margin-right: 19px;
     font-size: 0.9em;
 }
-
 
 .emoji-percent-container {
     display: flex;

@@ -5,9 +5,22 @@ document.addEventListener("DOMContentLoaded", function () {
   if(document.querySelector(".slider-checkbox").checked) {
     document.querySelector(".slider-checkbox").checked = false;
   }
+
+  
+
 });
 
-let formLoaded;
+//const socket = new WebSocket('wss://dry-enough.onrender.com');
+const socket = new WebSocket('ws://localhost:5500');
+
+//if there is already a location name in (user went back a page), call submitForm()
+if(document.getElementById("location").value != "") {
+  socket.addEventListener("open", () => {
+    console.log('calling submit form');
+    submitForm();
+  });
+}
+
 let day = 0;
 
 //object for temperature unit toggle
@@ -38,17 +51,6 @@ let percipData = [
   { day: '9', percipInches: null , percipMM: null },
   { day: '10', percipInches: null , percipMM: null },  
 ]
-
-//create websocket connection. will use local if url doesnt work
-
-const socket = new WebSocket('wss://dry-enough.onrender.com');
-
-socket.onerror = function(e) {
-  console.error('Websocket error: ', e);
-
-  socket.close;
-  const socket = new WebSocket('ws://localhost:5500');
-}
 
 function showLocation(locationObj) {
     //set results header to show location
@@ -187,14 +189,24 @@ async function popLoader() {
   formLoaded = true;
 }
 
+const weatherItems = document.getElementsByClassName('weather-item');
+for (let i = 0; i < weatherItems.length; i++) {
+  weatherItems[i].addEventListener('click', () => {
+      localStorage.setItem('clickedDay', i);
+      window.location.href = 'chart.html';
+  });
+}
+
 //handle submit button press
 async function submitForm() {
+  //make sure nothing is already displayed
   document.getElementById("weather-results").style.display = "none";
   document.getElementById("weather-grid").style.display = "none";
   for (let i = 1; i < 12; i++) {
     const el = document.getElementById("day" + i);
     el.style.display = "none";
   }
+
   //start gradient loading animation
   formLoaded = false;
   gradientBorder();
@@ -317,13 +329,13 @@ socket.onmessage = function (event) {
   if (receivedMsg.includes('location:')) {
     let locationStr = receivedMsg.slice(10);
     locationObj = JSON.parse(locationStr);
-
     showLocation(locationObj);
   } else {
     //display weather on successful response, ask user to reenter location on bad response
     if (receivedMsg === 'bad response') {
       showError();
     } else {
+      localStorage.setItem('apiData', receivedMsg);
       //display weather using JSON data from fruitfull API call
       displayWeather(JSON.parse(receivedMsg), 0);
     }

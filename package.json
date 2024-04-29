@@ -2,6 +2,7 @@
   "dependencies": {
     "@types/node": "^20.11.20",
     "body-parser": "^1.20.2",
+    "chart.js": "^4.4.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
@@ -30,5 +31,8 @@
     "url": "https://github.com/bocsir/dry-enough/issues"
   },
   "homepage": "https://github.com/bocsir/dry-enough#readme",
-  "description": "work in progress<br>\r Web app using a weather api to get the last few days of weather and help decide wether the rock in any area will be dry enough to climb."
+  "description": "work in progress<br>\r Web app using a weather api to get the last few days of weather and help decide wether the rock in any area will be dry enough to climb.",
+  "devDependencies": {
+    "@types/chart.js": "^2.9.41"
+  }
 }
