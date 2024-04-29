@@ -6,12 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".slider-checkbox").checked = false;
   }
 
-  
-
 });
 
-//const socket = new WebSocket('wss://dry-enough.onrender.com');
-const socket = new WebSocket('ws://localhost:5500');
+const socket = new WebSocket('wss://dry-enough.onrender.com');
+//const socket = new WebSocket('ws://localhost:5500');
 
 //if there is already a location name in (user went back a page), call submitForm()
 if(document.getElementById("location").value != "") {
