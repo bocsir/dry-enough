@@ -89,7 +89,7 @@ hr {
 
 #form {
     position: relative;
-    background-color: rgba(0, 0, 0, 0.918);
+    background-color: rgb(37, 31, 58);
     border-radius: 21px;
     display: flex;
     flex-direction: column;
