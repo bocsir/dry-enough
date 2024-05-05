@@ -7,33 +7,38 @@
     overflow-x: hidden;
 }
 
-body {
+body, html {
     font-family: "mono", monospace;
-    background-color: black;
+    background-image: url('../blurry-gradient-haikei.svg');
+    background-size: cover;
     color: white;
-    min-height: 100%;
+    min-height: 100vh;
     width: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 1.4em;
+    overflow: hidden;
+}
+
+#logo {
+    width: 50px;  
+    cursor: pointer;  
 }
 
 #body-border {
     margin: 20px 0;
     position: relative;
-    width: 96%;
-    height: 96%;
-    min-height: 95vh;
+    width: 36%;
+    min-height: 28vh;
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-direction: column;
-    border: 6px solid rgba(99, 94, 94, 0.856);
-    background-color: #1c1515;
+    background-color: #ffffffa8;
     border-radius: 30px;
-    box-shadow: 0px 0px 4px 1px black;
-}
-
+    box-shadow: 0px 0px 4px 1px black;}
 .chart {
     position: relative;
     display: flex;
