@@ -17,7 +17,6 @@ body, html {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     font-size: 1.4em;
     overflow: hidden;
 }
@@ -30,7 +29,7 @@ body, html {
 #body-border {
     margin: 20px 0;
     position: relative;
-    width: 36%;
+    max-width: 600px;
     min-height: 28vh;
     display: flex;
     align-items: center;
@@ -47,3 +46,9 @@ body, html {
     width: 80vw;
     height: 25vh;
 }
+
+@media(max-width: 500px) {
+    .chart {
+        scale: .8;
+    }
+}   
