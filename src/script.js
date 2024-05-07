@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-const socket = new WebSocket('wss://dry-enough.onrender.com');
-//const socket = new WebSocket('ws://localhost:5500');
+//const socket = new WebSocket('wss://dry-enough.onrender.com');
+const socket = new WebSocket('ws://localhost:5500');
 
 //if there is already a location name in (user went back a page), call submitForm()
 if(document.getElementById("location").value != "") {
@@ -389,6 +389,6 @@ function toggleTempUnit(u) {
   }
 }
 
-docuemnt.getElementById("logo").addEventListener('click', () => {
+document.getElementById("logo").addEventListener('click', () => {
   window.location.href = 'index.html';
 });

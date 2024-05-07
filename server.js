@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const reverseGeoKey = process.env.REVERSE_GEO_KEY;
 const forwardGeoKey = process.env.FORWARD_GEO_KEY;
+
 //create instance of express app in app object
 const express = require('express'); 
 const app = express();
@@ -15,16 +16,26 @@ const expressWs = require('express-ws');
 expressWs(app);
 
 //handle websocket connections
-let socket;
+let sockets = [];
+//let socket;
 app.ws('/', (ws) => {
-    socket = ws;
+    //socket = ws;
+    sockets.push(ws);
     console.log('Client connected');
 
     ws.on('message', (message) => {
         console.log('Received message:', message);
         //start making API calls
-        callApi(message);
-    })
+        callApi(message, ws);
+    });
+
+    ws.on('close', () => {
+        const index = sockets.indexOf(ws);
+        if(index > -1) {
+            sockets.splice(index, 1);
+            console.log('Client disconnected');
+        }
+    });
 });
 
 //middleware
@@ -35,7 +46,7 @@ app.use(express.static('assets'));
 app.use(bodyParser.json());
 
 //make API calls, send successful responses immediately to client
-async function callApi(location) {
+async function callApi(location, ws) {
 
         //get lat and lon from location with API call and build URL
         let weatherApiUrl;
@@ -66,7 +77,7 @@ async function callApi(location) {
                 console.error("bad response: ", locationResponse);
             } else {
                 const locationData = await locationResponse.json();
-                socket.send("location: " + JSON.stringify(locationData));
+                ws.send("location: " + JSON.stringify(locationData));
             }
 
             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/\//g, "%2F");
@@ -74,7 +85,7 @@ async function callApi(location) {
             weatherApiUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current=temperature_2m,relative_humidity_2m,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&hourly=precipitation_probability,temperature_2m,relative_humidity_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,precipitation_probability_max,sunset,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&past_days=3&forecast_days=8&timezone=" + timezone ;
         } catch(error) {
             console.error("error: ", error);
-            socket.send("bad response");
+            ws.send("bad response");
             return { error: true }
         }
 
@@ -88,7 +99,7 @@ async function callApi(location) {
             } else {
                 const data = await response.json();
                 //send the response
-                socket.send(JSON.stringify(data));
+                ws.send(JSON.stringify(data));
             }
         } catch (error) {
             console.error("fetch error: ", error);

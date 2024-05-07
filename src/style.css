@@ -10,7 +10,13 @@
 }
 
 html {
-    height: 100%;
+    min-height: 100%;
+    background-image: url('../bgh.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;    
+    background-color: rgb(1, 21, 35);
+
 }
 
 :root {
@@ -24,10 +30,6 @@ html {
 
 body {
     font-family: "mono", monospace;
-    background-image: url('../blurry-gradient-haikei.svg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-color: rgb(1, 21, 35);
     color: white;
     min-height: 100%;
     width: 100%;
@@ -71,10 +73,11 @@ header * {
 
 hr {
     margin-top: 15px;
-    width: 80%;
+    width: 50%;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
+    color: white;
 }
 
 #form-border {
@@ -96,7 +99,7 @@ hr {
 
 #form {
     position: relative;
-    background-color: rgb(37, 31, 58);
+    background-color: rgb(90, 67, 170);
     border-radius: 21px;
     display: flex;
     flex-direction: column;
@@ -118,6 +121,8 @@ hr {
 
 form label {
     padding: 10px;
+    padding-top: 15px;
+    font-size: 1rem;
 }
 
 #submit {
@@ -128,9 +133,9 @@ form label {
     width: 80px;
     height: 1.5rem;
     padding-top: 2px;
-    border: 1px solid rgb(129, 122, 122);
+    border: 1px solid white;
     background-color: transparent;
-    border-radius: 10px;
+    border-radius: 7px;
     color: white;
     cursor: pointer;
 }
@@ -154,6 +159,14 @@ article #note {
 
 #country {
     width: 150px;
+}
+
+a {
+    color: white;
+}
+
+a:visited {
+    color: white;
 }
 
 #weather-results {

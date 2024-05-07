@@ -18,15 +18,14 @@
         <header>
             <img id="logo" src="../logo.svg">
             <h1>IS IT DRY ENOUGH?</h1>
-            <p>input any location name or zip code to get PAST AND FUTURE weather data</p>
+            <p>get past and future weather data</p>
             <hr>
         </header>
 
         <main>
             <section id="form-border">
                 <form id="form" action="/submit" method="POST">
-
-                    <label for="location">location name or zip</label>
+                    <label for="location">location name or zip:</label>
                     <input type="text" id="location" name="location" placeholder="ex: New York City/ 10007">
                     <input type="submit" id="submit" value="Submit" onClick="submitForm(); return false">
                 </form>
