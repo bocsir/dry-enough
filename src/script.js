@@ -486,6 +486,7 @@ document.getElementById("logo").addEventListener("click", () => {
 const weatherItems = document.getElementsByClassName("weather-item");
 for (let i = 0; i < weatherItems.length; i++) {
   weatherItems[i].addEventListener("click", () => {
+    document.getElementById('tip').style.display = 'none';
     localStorage.setItem("clickedDay", i);
     updateChart();
   });

@@ -379,6 +379,11 @@ a:visited {
     margin-top: 20px;
 }
 
+#tip {
+    font-size: 1.2rem;
+    text-align: center;
+}
+
 .chart {
     position: relative;
     display: flex;
