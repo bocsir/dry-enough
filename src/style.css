@@ -393,6 +393,7 @@ a:visited {
     height: 340px;
     background-color: rgba(0,0,0, 0.5);
     border-radius: 10px;
+    padding: 5px;
 }
 
 h3 {
