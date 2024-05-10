@@ -29,6 +29,7 @@ body {
     min-height: 100%;
     width: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 1.4em;
@@ -51,7 +52,7 @@ main {
     display: flex;
     align-items: center;
     flex-direction: column;
-    background-color: #ffffff1c;
+    background-color: #5b5b5b00;
     border-radius: 30px;
     box-shadow: 0px 0px 4px 1px black;
 }
@@ -188,6 +189,10 @@ a:visited {
     cursor: pointer;
 }
 
+#day4:active {
+    border-color: yellow;
+}
+
 .weather-item:hover {
     transform: scale(1.1);
 }
@@ -219,7 +224,6 @@ a:visited {
 }
 
 #current-temp {
-    color:rgb(114, 114, 114);
     font-size: 2.5rem;
 }
 
@@ -367,6 +371,39 @@ a:visited {
     left: 30px;   
 }
 
+#charts {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.chart {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 700px;
+    height: 340px;
+    background-color: rgba(0,0,0, 0.5);
+    border-radius: 10px;
+}
+
+h3 {
+    max-width: 85vw;
+}
+
+#results-charts-container {
+    display: flex;
+    flex-direction: row;
+    gap: 80px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    min-height: 30vh;
+}
+
 @media (max-width: 525px) {
     header {
         font-size: 0.9rem;
@@ -376,6 +413,39 @@ a:visited {
         scale: .8;
         margin-top: 0;
     }
+    #results-charts-container {
+        gap: 0;
+    }
 
+    #charts {
+        margin-top: 0;
+        gap: 0;
+    }
+}
+
+@media(max-width: 1320px) {
+    #results-charts-container {
+        flex-direction: column;
+    }
+}
+
+@media(max-width: 755px) {
+    .chart {
+        width: 525px;
+        height: 255px;
+    }
+}
+
+
+@media(max-width: 560px) {
+    .chart {
+        scale: .8;
+    }
+}
+
+@media(max-width: 450px) {
+    .chart {
+        scale: .65;
+    }
 
 }

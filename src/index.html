@@ -9,11 +9,13 @@
     <link rel="icon" type="image/x-icon" href="../pixil-frame-0.ico">
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
+    <!-- <script defer src="weather-chart.js"></script> -->
 
 </head>
 
 <body>
     <img src="../bgh.svg" style="width:100%;height:100%;position:fixed;top:0;left:0;bottom:0;right:0;">
+
     <div id="body-border">
 
         <header>
@@ -26,13 +28,13 @@
         <main>
             <section id="form-border">
                 <form id="form" action="/submit" method="POST">
-                    <label for="location">location name or zip:</label>
+                    <label for="location">Enter a location</label>
                     <input type="text" id="location" name="location" placeholder="ex: New York City/ 10007">
                     <input type="submit" id="submit" value="Submit" onClick="submitForm(); return false">
                 </form>
             </section>
 
-            <section id="weather-results">
+            <div id="weather-results">
                 <h3 id="results-header"></h3>
                 <div class="slider-container">
                     <input class="slider-checkbox" type="checkbox">
@@ -42,67 +44,11 @@
                     <div class="slider"><span id="slider-text">°F</span></div>
                 </div>
 
-                <div id="weather-grid">
-                    <div class="weather-item-row">
-                        <div class="weather-item" id="day1">
-                            <div class="inline-span">
-                                <p class="date"></p>
-                                <div class="emoji-percent-container">
-                                    <p class="weather-icon"></p>
-                                    <p class="percip-percent"></p>
-                                </div>
-                            </div>
+                <div id="results-charts-container">
 
-                            <div class="weather-data">
-                                <div class="percip">
-                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                                </div>
-                                <p class="max-temp"></p>
-                                <p class="min-temp"></p>
-                            </div>
-                        </div>
-
-                        <div class="weather-item" id="day2">
-                            <div class="inline-span">
-                                <p class="date"></p>
-                                <div class="emoji-percent-container">
-                                    <p class="weather-icon"></p>
-                                    <p class="percip-percent"></p>
-                                </div>
-                            </div>
-
-                            <div class="weather-data">
-                                <div class="percip">
-                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                                </div>
-                                <p class="max-temp"></p>
-                                <p class="min-temp"></p>
-                            </div>
-                        </div>
-
-                        <div class="weather-item" id="day3">
-                            <div class="inline-span">
-                                <p class="date"></p>
-                                <div class="emoji-percent-container">
-                                    <p class="weather-icon"></p>
-                                    <p class="percip-percent"></p>
-                                </div>
-                            </div>
-
-                            <div class="weather-data">
-                                <div class="percip">
-                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                                </div>
-                                <p class="max-temp"></p>
-                                <p class="min-temp"></p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div id="row2" class="weather-item-row">
-                        <div class="weather-item" id="day4">
-                            <div id="day4-header">
+                    <div id="weather-grid">
+                        <div class="weather-item-row">
+                            <div class="weather-item" id="day1">
                                 <div class="inline-span">
                                     <p class="date"></p>
                                     <div class="emoji-percent-container">
@@ -119,164 +65,236 @@
                                     <p class="min-temp"></p>
                                 </div>
                             </div>
-                            <div id="vertical-divider"></div>
-                            <div id="current-day">
-                                <p>NOW:</p>
-                                <p id="current-temp">55</p>
-                                <p id="current-weather">Cloudy</p>
-                            </div>
 
-                        </div>
-                        <div class="weather-item" id="day5">
-                            <div class="inline-span">
-                                <p class="date"></p>
-                                <div class="emoji-percent-container">
-                                    <p class="weather-icon"></p>
-                                    <p class="percip-percent"></p>
+                            <div class="weather-item" id="day2">
+                                <div class="inline-span">
+                                    <p class="date"></p>
+                                    <div class="emoji-percent-container">
+                                        <p class="weather-icon"></p>
+                                        <p class="percip-percent"></p>
+                                    </div>
+                                </div>
+
+                                <div class="weather-data">
+                                    <div class="percip">
+                                        <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                    </div>
+                                    <p class="max-temp"></p>
+                                    <p class="min-temp"></p>
                                 </div>
                             </div>
 
-                            <div class="weather-data">
-                                <div class="percip">
-                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                            <div class="weather-item" id="day3">
+                                <div class="inline-span">
+                                    <p class="date"></p>
+                                    <div class="emoji-percent-container">
+                                        <p class="weather-icon"></p>
+                                        <p class="percip-percent"></p>
+                                    </div>
                                 </div>
-                                <p class="max-temp"></p>
-                                <p class="min-temp"></p>
+
+                                <div class="weather-data">
+                                    <div class="percip">
+                                        <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                    </div>
+                                    <p class="max-temp"></p>
+                                    <p class="min-temp"></p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div id="row2" class="weather-item-row">
+                            <div class="weather-item" id="day4">
+                                <div id="day4-header">
+                                    <div class="inline-span">
+                                        <p class="date"></p>
+                                        <div class="emoji-percent-container">
+                                            <p class="weather-icon"></p>
+                                            <p class="percip-percent"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="weather-data">
+                                        <div class="percip">
+                                            <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                        </div>
+                                        <p class="max-temp"></p>
+                                        <p class="min-temp"></p>
+                                    </div>
+                                </div>
+                                <div id="vertical-divider"></div>
+                                <div id="current-day">
+                                    <p>NOW:</p>
+                                    <p id="current-temp">55</p>
+                                    <p id="current-weather">Cloudy</p>
+                                </div>
+
+                            </div>
+                            <div class="weather-item" id="day5">
+                                <div class="inline-span">
+                                    <p class="date"></p>
+                                    <div class="emoji-percent-container">
+                                        <p class="weather-icon"></p>
+                                        <p class="percip-percent"></p>
+                                    </div>
+                                </div>
+
+                                <div class="weather-data">
+                                    <div class="percip">
+                                        <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                    </div>
+                                    <p class="max-temp"></p>
+                                    <p class="min-temp"></p>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="weather-item-row">
+                            <div class="weather-item" id="day6">
+                                <div class="inline-span">
+                                    <p class="date"></p>
+                                    <div class="emoji-percent-container">
+                                        <p class="weather-icon"></p>
+                                        <p class="percip-percent"></p>
+                                    </div>
+                                </div>
+
+                                <div class="weather-data">
+                                    <div class="percip">
+                                        <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                    </div>
+                                    <p class="max-temp"></p>
+                                    <p class="min-temp"></p>
+                                </div>
+                            </div>
+                            <div class="weather-item" id="day7">
+                                <div class="inline-span">
+                                    <p class="date"></p>
+                                    <div class="emoji-percent-container">
+                                        <p class="weather-icon"></p>
+                                        <p class="percip-percent"></p>
+                                    </div>
+                                </div>
+
+                                <div class="weather-data">
+                                    <div class="percip">
+                                        <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                    </div>
+                                    <p class="max-temp"></p>
+                                    <p class="min-temp"></p>
+                                </div>
+                            </div>
+                            <div class="weather-item" id="day8">
+                                <div class="inline-span">
+                                    <p class="date"></p>
+                                    <div class="emoji-percent-container">
+                                        <p class="weather-icon"></p>
+                                        <p class="percip-percent"></p>
+                                    </div>
+                                </div>
+
+                                <div class="weather-data">
+                                    <div class="percip">
+                                        <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                    </div>
+                                    <p class="max-temp"></p>
+                                    <p class="min-temp"></p>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="weather-item-row">
+
+                            <div class="weather-item" id="day9">
+                                <div class="inline-span">
+                                    <p class="date"></p>
+                                    <div class="emoji-percent-container">
+                                        <p class="weather-icon"></p>
+                                        <p class="percip-percent"></p>
+                                    </div>
+                                </div>
+
+                                <div class="weather-data">
+                                    <div class="percip">
+                                        <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                    </div>
+                                    <p class="max-temp"></p>
+                                    <p class="min-temp"></p>
+                                </div>
+                            </div>
+
+                            <div class="weather-item" id="day10">
+                                <div class="inline-span">
+                                    <p class="date"></p>
+                                    <div class="emoji-percent-container">
+                                        <p class="weather-icon"></p>
+                                        <p class="percip-percent"></p>
+                                    </div>
+                                </div>
+
+                                <div class="weather-data">
+                                    <div class="percip">
+                                        <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                    </div>
+                                    <p class="max-temp"></p>
+                                    <p class="min-temp"></p>
+                                </div>
+                            </div>
+                            <div class="weather-item" id="day11">
+                                <div class="inline-span">
+                                    <p class="date"></p>
+                                    <div class="emoji-percent-container">
+                                        <p class="weather-icon"></p>
+                                        <p class="percip-percent"></p>
+                                    </div>
+                                </div>
+
+                                <div class="weather-data">
+                                    <div class="percip">
+                                        <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
+                                    </div>
+                                    <p class="max-temp"></p>
+                                    <p class="min-temp"></p>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
 
-                    <div class="weather-item-row">
-                        <div class="weather-item" id="day6">
-                            <div class="inline-span">
-                                <p class="date"></p>
-                                <div class="emoji-percent-container">
-                                    <p class="weather-icon"></p>
-                                    <p class="percip-percent"></p>
-                                </div>
-                            </div>
-
-                            <div class="weather-data">
-                                <div class="percip">
-                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                                </div>
-                                <p class="max-temp"></p>
-                                <p class="min-temp"></p>
-                            </div>
+                    <div id="charts">
+                        <h3 id="charts-description"></h3>
+                        <div class="chart">
+                            <canvas id="myChart"></canvas>
                         </div>
-                        <div class="weather-item" id="day7">
-                            <div class="inline-span">
-                                <p class="date"></p>
-                                <div class="emoji-percent-container">
-                                    <p class="weather-icon"></p>
-                                    <p class="percip-percent"></p>
-                                </div>
-                            </div>
-
-                            <div class="weather-data">
-                                <div class="percip">
-                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                                </div>
-                                <p class="max-temp"></p>
-                                <p class="min-temp"></p>
-                            </div>
-                        </div>
-                        <div class="weather-item" id="day8">
-                            <div class="inline-span">
-                                <p class="date"></p>
-                                <div class="emoji-percent-container">
-                                    <p class="weather-icon"></p>
-                                    <p class="percip-percent"></p>
-                                </div>
-                            </div>
-
-                            <div class="weather-data">
-                                <div class="percip">
-                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                                </div>
-                                <p class="max-temp"></p>
-                                <p class="min-temp"></p>
-                            </div>
+                        <div class="chart">
+                            <canvas id="myChart2"></canvas>
                         </div>
 
                     </div>
-
-
-                    <div class="weather-item-row">
-
-                        <div class="weather-item" id="day9">
-                            <div class="inline-span">
-                                <p class="date"></p>
-                                <div class="emoji-percent-container">
-                                    <p class="weather-icon"></p>
-                                    <p class="percip-percent"></p>
-                                </div>
-                            </div>
-
-                            <div class="weather-data">
-                                <div class="percip">
-                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                                </div>
-                                <p class="max-temp"></p>
-                                <p class="min-temp"></p>
-                            </div>
-                        </div>
-
-                        <div class="weather-item" id="day10">
-                            <div class="inline-span">
-                                <p class="date"></p>
-                                <div class="emoji-percent-container">
-                                    <p class="weather-icon"></p>
-                                    <p class="percip-percent"></p>
-                                </div>
-                            </div>
-
-                            <div class="weather-data">
-                                <div class="percip">
-                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                                </div>
-                                <p class="max-temp"></p>
-                                <p class="min-temp"></p>
-                            </div>
-                        </div>
-                        <div class="weather-item" id="day11">
-                            <div class="inline-span">
-                                <p class="date"></p>
-                                <div class="emoji-percent-container">
-                                    <p class="weather-icon"></p>
-                                    <p class="percip-percent"></p>
-                                </div>
-                            </div>
-
-                            <div class="weather-data">
-                                <div class="percip">
-                                    <i class="fa-solid fa-droplet"></i><span class="percip-data"> </span>
-                                </div>
-                                <p class="max-temp"></p>
-                                <p class="min-temp"></p>
-                            </div>
-                        </div>
-
-                    </div>
-
+    
                 </div>
-            </section>
+            </div>
+            </main>
 
-
-
-            <article>
-                <p id="note">
-                    <strong>Note:</strong><br> Since time to dry varies by rock type, check or ask for
-                    information about when it is safe to climb at your crag. Find info on
-                    <a href="https://www.mountainproject.com/">mountainproject</a>.<br><br>
-                    This site is powered by: <a href="https://open-meteo.com/" title="Weather API">open-meteo.com</a>,
-                    <a href="https://openweathermap.org/" title="Weather API">openweathermap.org</a>,
-                    and <a href="https://locationiq.com/" title="Weather API">locationiq.com</a>.
-                </p>
-            </article>
-        </main>
+        <article>
+            <p id="note">
+                <strong>Note:</strong><br> Since time to dry varies by rock type, check or ask for
+                information about when it is safe to climb at your crag. Find info on
+                <a href="https://www.mountainproject.com/">mountainproject</a>.<br><br>
+                This site is powered by: <a href="https://open-meteo.com/" title="Weather API">open-meteo.com</a>,
+                <a href="https://openweathermap.org/" title="Weather API">openweathermap.org</a>,
+                and <a href="https://locationiq.com/" title="Weather API">locationiq.com</a>.
+            </p>
+        </article>
 
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 
 </html>
