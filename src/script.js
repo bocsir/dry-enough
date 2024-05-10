@@ -499,6 +499,7 @@ function updateChart() {
 
   if(document.querySelector("#charts").style.display === "flex") {
     myChart.destroy();
+    myChart2.destroy();
   }
   
   let clickedDay = localStorage.getItem("clickedDay");
