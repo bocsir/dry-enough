@@ -526,6 +526,7 @@ function updateChart(dataType) {
   //destroy chart if it exists so that a new one can replace it
   if(document.querySelector("#charts").style.display === "flex") {
     myChart.destroy();
+    myChart2.destroy();
   }
 
   //set chart description 'Showing hourly weather for ...'
