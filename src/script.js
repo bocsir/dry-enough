@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-//const socket = new WebSocket('wss://dry-enough.onrender.com');
-const socket = new WebSocket("ws://localhost:5500");
+const socket = new WebSocket('wss://dry-enough.onrender.com');
+//const socket = new WebSocket("ws://localhost:5500");
 
 //if there is already a location name in (user went back a page), call submitForm()
 if (document.getElementById("location").value != "") {
@@ -256,6 +256,16 @@ async function submitForm() {
   //make sure nothing is already displayed
   document.getElementById("weather-results").style.display = "none";
   document.getElementById("weather-grid").style.display = "none";
+  document.getElementById("charts").style.display = "none";
+  
+  const dropDownVal = document.querySelector('.chart-dropdown');
+  dropDownVal.value = '1';
+  if (myChart) {
+    myChart.destroy();
+    lastDataType = 'Temperature';
+  }
+  
+
   for (let i = 1; i < 12; i++) {
     const el = document.getElementById("day" + i);
     el.style.display = "none";
@@ -492,65 +502,73 @@ for (let i = 0; i < weatherItems.length; i++) {
   });
 }
 
-let myChart;
-let myChart2;
 
-function updateChart() {
-
-  if(document.querySelector("#charts").style.display === "flex") {
-    myChart.destroy();
-  }
-  
-  let clickedDay = localStorage.getItem("clickedDay");
-
-  const dayEl = document.getElementById("day" + ++clickedDay);
-  let dateString = dayEl
-    .querySelector(".inline-span")
-    .querySelector(".date")
-    .innerHTML.replace("<br>", " ");
+function chartsDescription(dayEl) {
+  let dateString = dayEl.querySelector(".inline-span").querySelector(".date").innerHTML.replace("<br>", " ");
   let parts = dateString.split(" ");
   dateString = parts[1] + " " + parts[0];
 
+  document.getElementById("charts-description").innerHTML = "Hourly weather for " + dateString + ":";
+}
+
+let myChart;
+let lastDataType = "Temperature";
+
+function updateChart(dataType) {
+
+  //if function is called from clicking a day, use last datatype
+  if (!dataType) {
+     dataType = lastDataType;
+  } else {
+    lastDataType = dataType;
+  }
+
+  //destroy chart if it exists so that a new one can replace it
+  if(document.querySelector("#charts").style.display === "flex") {
+    myChart.destroy();
+  }
+
+  //set chart description 'Showing hourly weather for ...'
+  let clickedDay = localStorage.getItem("clickedDay");
+
+  const dayEl = document.getElementById("day" + ++clickedDay);
+  chartsDescription(dayEl);
+
+
+  const dataMapping = {
+    "Temperature": { jsonObjName: "temperature_2m", unit: "°F" },
+    "Precipitation": { jsonObjName: "precipitation", unit: "in." },
+    "Humidity": { jsonObjName: "relative_humidity_2m", unit: "%" },
+    "Cloud Cover": { jsonObjName: "cloud_cover", unit: "%" },
+    "Wind Speed": { jsonObjName: "wind_speed_10m", unit: "mph" },
+    "Percipitation Chance": { jsonObjName: "precipitation_probability", unit: "%" }
+  };
+  
+  // Provide a default value if dataType is not found
+  const defaultType = { jsonObjName: "temperature_2m", unit: "°F" };
+
+  if (typeof dataType === 'undefined') { dataType = "Temperature"; }
+  
+  const { jsonObjName, unit } = dataMapping[dataType] || defaultType;
+
+  clickedDay--;
   const apiData = JSON.parse(localStorage.getItem("apiData"));
-  document.getElementById("charts-description").innerHTML =
-    "Hourly weather for " + dateString;
 
-  //graph1
-  let percipInHourly = [];
-  let percipProbHourly = [];
-  let relativeHumidity = [];
-
-  //graph2
-  let temperatureHourly = [];
-  let cloudCover = [];
-  let windSpeed = [];
-
-  //get percip data for every other hour in the day
+  let hourlyData = [];
+  //get percip data for every other hour in the day based on jsonObjName from switch statement
   for (let i = 0; i < 24; i += 2) {
     const hourOfDay = i + clickedDay * 24;
-    percipProbHourly.push(apiData.hourly.precipitation_probability[hourOfDay]);
-    percipInHourly.push(apiData.hourly.precipitation[hourOfDay]);
-    relativeHumidity.push(apiData.hourly.relative_humidity_2m[hourOfDay]);
-
-    temperatureHourly.push(apiData.hourly.temperature_2m[hourOfDay]);
-    cloudCover.push(apiData.hourly.cloud_cover[hourOfDay]);
-    windSpeed.push(apiData.hourly.wind_speed_10m[hourOfDay]);
+    hourlyData.push(apiData.hourly[jsonObjName][hourOfDay]);
   }
-  console.log(percipProbHourly);
+  
   const ctx = document.getElementById("myChart").getContext("2d");
 
-  let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(1, "rgba(255, 255, 255, 0.8)");
-  gradient.addColorStop(0, "rgba(0, 0, 161, 0.3)");
-
+  //create background gradient
   let gradient2 = ctx.createLinearGradient(0, 0, 0, 400);
   gradient2.addColorStop(1, "rgba(118,119,148, .4)");
   gradient2.addColorStop(0, "rgba(0, 0, 161, 0.3)");
 
-  let gradient3 = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient3.addColorStop(1, "rgba(0, 51, 103, .4)");
-  gradient3.addColorStop(0, "rgba(0, 0, 161, 0.3)");
-
+  //x-axis (time)
   const labels = [
     "12 AM",
     "2 AM",
@@ -570,87 +588,60 @@ function updateChart() {
     labels: labels,
     datasets: [
       {
-        label: "Precipitation Chance",
-        align: 'end',
-        data: percipProbHourly,
+        data: hourlyData,
         borderWidth: 2,
-        borderColor: "rgba(255, 255, 255, .6)",
-        backgroundColor: "rgba(255, 255, 255, .6)",
-        pointBackgroundColor: "rgba(255, 255, 255, .6)",
+        borderColor: "rgba(255, 255, 255, 0.8)",
+        pointBackgroundColor: "rgba(255, 255, 255, 0.8S)",
         hoverRadius: 12,
         hitRadius: 30,
         fill: true,
-        backgroundColor: gradient2,
         tension: 0.3,
-        yAxisID: "y",
-      },
-      {
-        label: "Precipitation",
-        data: percipInHourly,
-        borderWidth: 2,
-        borderColor: "rgba(122, 122, 255, 0.8)",
-        backgroundColor: "rgba(122, 122, 255, 0.8)",
-        pointBackgroundColor: "rgba(122, 122, 255, 0.8)",
-        hoverRadius: 12,
-        hitRadius: 30,
-        fill: true,
-        backgroundColor: gradient,
-        tension: 0.3,
-        yAxisID: "y2",
-      },
-      {
-        label: "Relative Humidity",
-        data: relativeHumidity,
-        borderWidth: 2,
-        borderColor: "rgba(0, 38, 77, 0.8)",
-        backgroundColor: "rgba(0, 38, 77, 0.8)",
-        pointBackgroundColor: "rgba(0, 38, 77, 0.8)",
-        hoverRadius: 12,
-        hitRadius: 30,
-        fill: true,
-        backgroundColor: gradient3,
-        tension: 0.3,
-        yAxisID: "y3",
-      },
-    ],
+        yAxisID: 'y',
+      }
+    ]
   };
 
   let delayed;
-
   const config = {
     type: "line",
     data: data,
     options: {
-      legend: {
-        labels: {
-          align: 'end'
+      layout: {
+        padding: {
+          top: 40,
+        },
+      },
+      plugins: {
+        title:  {
+          display: false,
+        },
+        legend: {
+          display: false,
         }
       },
       scales: {
         y: {
+          grid: {
+            color: 'rgba(200, 200, 200, 0.2)',
+            lineWidth: 1,
+          },
           beginAtZero: true,
           ticks: {
+            color: 'white',
             callback: function (value) {
-              return value + "%";
+              return value + unit;
             },
           },
         },
-        y2: {
-          beginAtZero: true,
-          ticks: {
-            callback: function (value) {
-              return value + "In.";
-            },
+        x: {
+          grid: {
+            color: 'rgba(200, 200, 200, 0.2)',
+            lineWidth: 1,
           },
-        },
-        y3: {
-          beginAtZero: true,
           ticks: {
-            callback: function (value) {
-              return value + "%";
-            },
-          },
-        },
+            color: 'white',
+          }
+        }
       },
       responsive: true,
       animation: {
@@ -664,123 +655,17 @@ function updateChart() {
             context.mode === "default" &&
             !delayed
           ) {
-            delay = context.dataIndex * 300 + context.datasetIndex * 100;
+            delay = context.dataIndex * 100 + context.datasetIndex * 50;
           }
           return delay;
         },
       },
     },
   };
-
+  
+  //create chart
   myChart = new Chart(ctx, config);
-
-  //second chart
-  const ctx2 = document.getElementById("myChart2").getContext("2d");
-
-  gradient = ctx2.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(1, "rgba(99, 99, 255, 0.8)");
-
-  gradient.addColorStop(0, "rgba(0, 0, 161, 0.3)");
-
-  const data2 = {
-    labels: labels,
-    datasets: [
-      {
-        label: "Temperature",
-        data: temperatureHourly,
-        borderWidth: 2,
-        borderColor: "rgba(255, 255, 255, .6)",
-        pointBackgroundColor: "rgba(255, 255, 255, .6)",
-        hoverRadius: 12,
-        hitRadius: 30,
-        fill: true,
-        backgroundColor: gradient2,
-        tension: 0.3,
-        yAxisID: "y",
-      },
-      {
-        label: "Cloud Cover",
-        data: cloudCover,
-        borderWidth: 2,
-        borderColor: "rgba(122, 122, 255, 0.8)",
-        pointBackgroundColor: "rgba(122, 122, 255, 0.8)",
-        hoverRadius: 12,
-        hitRadius: 30,
-        fill: true,
-        backgroundColor: gradient,
-        tension: 0.3,
-        yAxisID: "y2",
-      },
-      {
-        label: "Wind Speed",
-        data: windSpeed,
-        borderWidth: 2,
-        borderColor: "rgba(0, 38, 77, 0.8)",
-        pointBackgroundColor: "rgba(0, 38, 77, 0.8)",
-        hoverRadius: 12,
-        hitRadius: 30,
-        fill: true,
-        backgroundColor: gradient3,
-        tension: 0.3,
-        yAxisID: "y3",
-      },
-    ],
-  };
-
-  const config2 = {
-    type: "line",
-    data: data2,
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function (value) {
-              return value + "°F";
-            },
-          },
-        },
-        y2: {
-          beginAtZero: true,
-          ticks: {
-            callback: function (value) {
-              return value + "%";
-            },
-          },
-        },
-        y3: {
-          beginAtZero: true,
-          ticks: {
-            callback: function (value) {
-              return value + "mph";
-            },
-          },
-        },
-      },
-      responsive: true,
-      animation: {
-        onComplete: () => {
-          delayed = true;
-        },
-        delay: (context) => {
-          let delay = 0;
-          if (
-            context.type === "data" &&
-            context.mode === "default" &&
-            !delayed
-          ) {
-            delay = context.dataIndex * 300 + context.datasetIndex * 100;
-          }
-          return delay;
-        },
-      },
-    },
-  };
-
-  myChart2 = new Chart(ctx2, config2);
-
   document.querySelector("#charts").style.display = "flex";
-
 }
 
 document.getElementById("logo").addEventListener("click", () => {

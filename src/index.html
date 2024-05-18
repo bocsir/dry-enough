@@ -27,22 +27,25 @@
 
         <main>
             <section id="form-border">
-                <form id="form" action="/submit" method="POST">
-                    <label for="location">Enter a location</label>
-                    <input type="text" id="location" name="location" placeholder="ex: New York City/ 10007">
-                    <input type="submit" id="submit" value="Submit" onClick="submitForm(); return false">
-                </form>
+                <div id="form-background">
+                    <form id="form" action="/submit" method="POST">
+                        <label for="location">Enter a location</label>
+                        <input type="text" id="location" name="location" placeholder="ex: New York City/ 10007">
+                        <input type="submit" id="submit" value="Submit" onClick="submitForm(); return false">
+                    </form>
+                    <div class="slider-container">
+                        <input class="slider-checkbox" type="checkbox">
+                        <div class="border slider-border-left"></div>
+                        <div class="border slider-border-right"></div>
+    
+                        <div class="slider"><span id="slider-text">°F</span></div>
+                    </div>
+    
+                </div>
             </section>
 
             <div id="weather-results">
-                <h3 id="results-header"></h3>
-                <div class="slider-container">
-                    <input class="slider-checkbox" type="checkbox">
-                    <div class="border slider-border-left"></div>
-                    <div class="border slider-border-right"></div>
-
-                    <div class="slider"><span id="slider-text">°F</span></div>
-                </div>
+                <h2 id="results-header"></h2>
 
                 <div id="results-charts-container">
 
@@ -270,25 +273,21 @@
                     <div id="charts">
                         <h3 id="charts-description"></h3>
                         <div class="chart">
+                            <select class="chart-dropdown">
+                                <option value="1" onclick="updateChart('Temperature')">Temperature</option>
+                                <option value="2" onclick="updateChart('Precipitation')">Precipitation</option>
+                                <option value="3" onclick="updateChart('Humidity')">Humidity</option>
+                                <option value="4" onclick="updateChart('Cloud Cover')">Cloud Cover</option>
+                                <option value="5" onclick="updateChart('Wind Speed')">Wind Speed</option>
+                                <option value="6" onclick="updateChart('Percipitation Chance')">Percipitation Chance</option>
+                            </select>
                             <canvas id="myChart"></canvas>
                         </div>
-                        <div class="chart">
-                            <canvas id="myChart2"></canvas>
-                        </div>
-
                     </div>
     
                 </div>
             </div>
             </main>
-
-        <article>
-            <p id="note">
-                <strong>Note:</strong><br> Since time to dry varies by rock type, check or ask for
-                information about when it is safe to climb at your crag. Find info on
-                <a href="https://www.mountainproject.com/">mountainproject</a>.<br><br>
-            </p>
-        </article>
 
     </div>
 
