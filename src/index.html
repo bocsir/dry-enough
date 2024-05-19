@@ -51,7 +51,7 @@
                 <div id="results-charts-container">
 
                     <div id="weather-grid">
-                        <p id="tip">(Select a day for hourly information)</p>
+                        <p id="tip">Select any day for hourly information</p>
 
                         <div class="weather-item-row">
                             <div class="weather-item" id="day1">
@@ -271,22 +271,24 @@
 
                     </div>
 
-                    <div id="chart-map-container">
+                    <div id="chart-map-desc-container">
                         <h3 id="charts-description"></h3>
-                        <div class="chart">
-                            <select class="chart-dropdown">
-                                <option value="1" onclick="updateChart('Temperature')">Temperature</option>
-                                <option value="2" onclick="updateChart('Precipitation')">Precipitation</option>
-                                <option value="6" onclick="updateChart('Percipitation Chance')">Percipitation Chance</option>
-                                <option value="3" onclick="updateChart('Humidity')">Humidity</option>
-                                <option value="4" onclick="updateChart('Cloud Cover')">Cloud Cover</option>
-                                <option value="5" onclick="updateChart('Wind Speed')">Wind Speed</option>
-                            </select>
-                            <canvas id="myChart"></canvas>
-                        </div>
-                        <div id="map-container">
-                            <img id="map" class="chart" alt="map"/>
-                            <a id="directions-link" target="_blank">get directions <i class="fa-solid fa-arrow-up-right-from-square"></i></a>    
+                        <div class="chart-map-container">
+                            <div class="chart">
+                                <select class="chart-dropdown">
+                                    <option value="1" onclick="updateChart('Temperature')">Temperature</option>
+                                    <option value="6" onclick="updateChart('Percipitation Chance')">Percipitation Chance</option>
+                                    <option value="2" onclick="updateChart('Precipitation')">Precipitation</option>
+                                    <option value="3" onclick="updateChart('Humidity')">Humidity</option>
+                                    <option value="4" onclick="updateChart('Cloud Cover')">Cloud Cover</option>
+                                    <option value="5" onclick="updateChart('Wind Speed')">Wind Speed</option>
+                                </select>
+                                <canvas id="myChart"></canvas>
+                            </div>
+                            <div id="map-container">
+                                <img id="map" class="chart" alt="map"/>
+                                <a id="directions-link" target="_blank">get directions <i class="fa-solid fa-arrow-up-right-from-square"></i></a>    
+                            </div>
                         </div>
                     </div>  
     

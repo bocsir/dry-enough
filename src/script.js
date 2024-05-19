@@ -317,7 +317,7 @@ async function submitForm() {
   //make sure nothing is already displayed
   document.getElementById("weather-results").style.display = "none";
   document.getElementById("weather-grid").style.display = "none";
-  document.getElementById("chart-map-container").style.display = "none";
+  document.getElementById("chart-map-desc-container").style.display = "none";
   
   //create directions link
   const directionsLink = document.getElementById("directions-link");
@@ -452,7 +452,7 @@ async function gradientBorder() {
   let borderElement = document.getElementById("form-border");
 
   for (let i = 1; !formLoaded; i++) {
-    await new Promise((resolve) => setTimeout(resolve));
+    await wait(10);
 
     const speedMultiplier = 5;
     let deg = 30 + i * speedMultiplier;
@@ -460,6 +460,8 @@ async function gradientBorder() {
     borderElement.style.background =
       "linear-gradient(" + deg + "deg, rgb(217, 219, 221) 40%, rgb(91, 0, 227) 60%";
   }
+
+  updateChart("Temperature", true);
 }
 
 function showError() {
@@ -573,12 +575,18 @@ for (let i = 0; i < weatherItems.length; i++) {
 }
 
 
-function chartsDescription(dayEl) {
+function chartsDescription(dayEl, clickedDay) {
   let dateString = dayEl.querySelector(".inline-span").querySelector(".date").innerHTML.replace("<br>", " ");
   let parts = dateString.split(" ");
   dateString = parts[1] + " " + parts[0];
 
-  document.getElementById("charts-description").innerHTML = "Hourly weather for " + dateString + ":";
+  let descriptionStr =  "Hourly weather for " + dateString + ":"
+
+  if(clickedDay === 4) {
+    descriptionStr = "Hourly weather for today, " + dateString + ":"
+  }
+
+  document.getElementById("charts-description").innerHTML = descriptionStr;
 }
 
 //conversion functions
@@ -601,7 +609,7 @@ const millimetersToInces = (m) => {
 let myChart;
 let lastDataType = "Temperature";
 
-function updateChart(dataType) {
+function updateChart(dataType, showToday) {
 
   //if function is called from clicking a day, use last datatype
   if (!dataType) {
@@ -611,15 +619,19 @@ function updateChart(dataType) {
   }
 
   //destroy chart if it exists so that a new one can replace it
-  if(document.querySelector("#chart-map-container").style.display === "flex") {
+  if(document.querySelector("#chart-map-desc-container").style.display === "flex") {
     myChart.destroy();
   }
 
-  //set chart description 'Showing hourly weather for ...'
-  let clickedDay = localStorage.getItem("clickedDay");
+  let clickedDay;
+  if(showToday) {
+    clickedDay = 3;
+  } else {
+    clickedDay = localStorage.getItem("clickedDay");
+  }
 
   const dayEl = document.getElementById("day" + ++clickedDay);
-  chartsDescription(dayEl);
+  chartsDescription(dayEl, clickedDay);
 
   const dataMapping = {
     "Temperature": { jsonObjName: "temperature_2m", unit: "°F" },
@@ -761,7 +773,7 @@ function updateChart(dataType) {
   
   //create chart
   myChart = new Chart(ctx, config);
-  document.querySelector("#chart-map-container").style.display = "flex";
+  document.querySelector("#chart-map-desc-container").style.display = "flex";
 }
 
 document.getElementById("logo").addEventListener("click", () => {
