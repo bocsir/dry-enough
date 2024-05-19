@@ -25,8 +25,13 @@ app.ws('/', (ws) => {
 
     ws.on('message', (message) => {
         console.log('Received message:', message);
-        //start making API calls
-        callApi(message, ws);
+        if(message.includes("search:")) {
+            message = message.slice(7);
+            getSearchSuggestions(message, ws);
+        } else {
+            //start geo and weather API calls
+            callApi(message, ws);
+        }
     });
 
     ws.on('close', () => {
@@ -45,6 +50,20 @@ app.use(express.static('assets'));
 //allow JSON data parsing
 app.use(bodyParser.json());
 
+async function getSearchSuggestions(location, ws) {
+    try {
+        const loc = location.split("+").join("%20");
+        const coordsResponse = await fetch("https://us1.locationiq.com/v1/search?key=" + forwardGeoKey + "&q=" + loc + "&format=json&");
+        const coordsData = await coordsResponse.json();
+    
+        ws.send('suggestions:' + JSON.stringify(coordsData));
+    } catch(error) {
+        console.error("error: ", error);
+        ws.send("bad response");
+        return { error: true }
+    }
+}
+
 //make API calls, send successful responses immediately to client
 async function callApi(location, ws) {
 
@@ -55,20 +74,13 @@ async function callApi(location, ws) {
             const loc = location.split("+").join("%20");
             const coordsResponse = await fetch("https://us1.locationiq.com/v1/search?key=" + forwardGeoKey + "&q=" + loc + "&format=json&");
             const coordsData = await coordsResponse.json();
-            let lat;
-            let lon;
+            let lat = coordsData[0].lat;
+            let lon = coordsData[0].lon;
 
-            if(/\d/.test(location)) {
-                lat = coordsData[1].lat;
-                lon = coordsData[1].lon;
-            } else {
-                lat = coordsData[0].lat;
-                lon = coordsData[0].lon;
-            }
-
+            const mapUrl = 'https://maps.locationiq.com/v3/staticmap?key=' + forwardGeoKey + '&center=' + lat + ',' + lon + '&zoom='+'10' +'&size=550x325&format=png&maptype=street';
+            const mapData = await fetch(mapUrl);
             // const coordsResponse = await fetch("https://geocoding-api.open-meteo.com/v1/search?name=" + location);
             // const coordsData = await coordsResponse.json();
-
             //get nice readable loaction name from openweather API
             const reverseGeoUrl = "http://api.openweathermap.org/geo/1.0/reverse?lat=" + lat + "&lon=" + lon + "&limit=1&appid=" + reverseGeoKey;
             const locationResponse = await fetch(reverseGeoUrl);
@@ -77,13 +89,18 @@ async function callApi(location, ws) {
                 console.error("bad response: ", locationResponse);
             } else {
                 const locationData = await locationResponse.json();
-                ws.send("location: " + JSON.stringify(locationData));
+                ws.send("location:" + JSON.stringify(locationData));
+            }
+
+            if(!mapData.ok) {
+                console.error("bad response: ", mapData);
+            } else {
+                ws.send('img:'+ mapData.url);
             }
 
             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/\//g, "%2F");
 
             weatherApiUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current=temperature_2m,relative_humidity_2m,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&hourly=precipitation_probability,temperature_2m,relative_humidity_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,precipitation_probability_max,sunset,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&past_days=3&forecast_days=8&timezone=" + timezone ;
-            console.log(weatherApiUrl);
         } catch(error) {
             console.error("error: ", error);
             ws.send("bad response");

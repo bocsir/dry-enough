@@ -9,14 +9,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
 const socket = new WebSocket('wss://dry-enough.onrender.com');
 //const socket = new WebSocket("ws://localhost:5500");
+let debounceTimeout;
 
-//if there is already a location name in (user went back a page), call submitForm()
-if (document.getElementById("location").value != "") {
-  socket.addEventListener("open", () => {
-    console.log("calling submit form");
-    submitForm();
-  });
-}
+//search suggestions. make this run every second and not keyup
+document.getElementById("location").addEventListener("input", async function (event) {
+
+  clearTimeout(debounceTimeout);
+
+  debounceTimeout = setTimeout(() => {
+    const location = 
+    document.getElementById("location").value
+    .replace(/,/g, '')
+    .split(" ")
+    .join("+");
+    socket.send('search:' + location);  
+  }, 500);
+  
+});
 
 let day = 0;
 
@@ -114,6 +123,11 @@ let percipData = [
   { day: "9", percipInches: null, percipMM: null },
   { day: "10", percipInches: null, percipMM: null },
 ];
+
+function displayMapImg(url) {
+  const img = document.getElementById("map");
+  img.src = url;
+}
 
 function showLocation(locationObj) {
   //set results header to show location
@@ -218,6 +232,53 @@ async function displayWeather(data, day) {
   return { error: false };
 }
 
+document.addEventListener('click', (e) => {
+  if(e.target.id === 'suggestions') {
+    document.getElementById("suggestions").style.display = "none";
+} else if(e.target.id === 'location' && document.getElementById("suggestions").children.length > 0) {
+    document.getElementById("suggestions").style.display = "flex";
+  } else {
+    document.getElementById("suggestions").style.display = "none";
+  }
+}) 
+
+function displaySuggestions(suggestionsArr) {
+  const suggestionsContainer = document.getElementById("suggestions");
+  suggestionsContainer.innerHTML = "";
+
+  let len = 5;
+  if(suggestionsArr.length < 5) {
+    len = suggestionsArr.length;
+  }
+
+  for(let i = 0; i < len; i++) {
+    if (typeof(suggestionsArr[i]) === "undefined") { 
+      const suggestionElement = document.createElement("li");
+      suggestionElement.classList.add("suggestion");
+      suggestionElement.innerHTML = 'error: check spelling';
+      suggestionsContainer.appendChild(suggestionElement);     
+      document.getElementById("suggestions").style.display = "flex"; 
+      break;
+    }
+    const suggestion = suggestionsArr[i];
+    const suggestionElement = document.createElement("li");
+    suggestionElement.classList.add("suggestion");
+    suggestionElement.innerHTML = suggestion.display_name;
+    suggestionsContainer.appendChild(suggestionElement);     
+    document.getElementById("suggestions").style.display = "flex"; 
+  }  
+  addEventListeners();
+}
+
+function addEventListeners() {
+  document.querySelectorAll('.suggestion').forEach(el => {
+    el.addEventListener('click', () => {
+      document.getElementById("location").value = el.innerHTML;
+      submitForm();
+    });
+  });
+}
+
 function wait(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -256,8 +317,12 @@ async function submitForm() {
   //make sure nothing is already displayed
   document.getElementById("weather-results").style.display = "none";
   document.getElementById("weather-grid").style.display = "none";
-  document.getElementById("charts").style.display = "none";
+  document.getElementById("chart-map-container").style.display = "none";
   
+  //create directions link
+  const directionsLink = document.getElementById("directions-link");
+  directionsLink.href = 'https://www.google.com/maps/dir/' + document.getElementById("location").value;
+
   const dropDownVal = document.querySelector('.chart-dropdown');
   dropDownVal.value = '1';
   if (myChart) {
@@ -265,7 +330,6 @@ async function submitForm() {
     lastDataType = 'Temperature';
   }
   
-
   for (let i = 1; i < 12; i++) {
     const el = document.getElementById("day" + i);
     el.style.display = "none";
@@ -282,10 +346,11 @@ async function submitForm() {
     swapTempUnit();
   }
 
-  //send location to server
+  //send location to server for geocoding
   const location = document
-    .getElementById("location")
-    .value.split(" ")
+    .getElementById("location").value
+    .replace(/,/g, '')
+    .split(" ")
     .join("+");
   socket.send(location);
 }
@@ -393,9 +458,7 @@ async function gradientBorder() {
     let deg = 30 + i * speedMultiplier;
 
     borderElement.style.background =
-      "linear-gradient(" +
-      deg +
-      "deg,  rgba(0, 0, 161, 0.3) 30%,rgba(255, 255, 255, .6) 40%,rgba(89, 89, 255, 0.8) 60%)";
+      "linear-gradient(" + deg + "deg, rgb(217, 219, 221) 40%, rgb(91, 0, 227) 60%";
   }
 }
 
@@ -425,9 +488,15 @@ socket.onclose = function (event) {
 socket.onmessage = function (event) {
   const receivedMsg = event.data;
   if (receivedMsg.includes("location:")) {
-    let locationStr = receivedMsg.slice(10);
+    const locationStr = receivedMsg.slice(9);
     locationObj = JSON.parse(locationStr);
     showLocation(locationObj);
+  } else if (receivedMsg.includes("img:")) {
+    const imgUrl = receivedMsg.slice(4);
+    displayMapImg(imgUrl);
+  }else if(receivedMsg.includes("suggestions:")) {
+    const suggestions = receivedMsg.slice(12);
+    displaySuggestions(JSON.parse(suggestions));
   } else {
     //display weather on successful response, ask user to reenter location on bad response
     if (receivedMsg === "bad response") {
@@ -445,6 +514,7 @@ const checkboxElement = document.querySelector(".slider-checkbox");
 checkboxElement.addEventListener("change", swapTempUnit);
 
 function swapTempUnit() {
+  updateChart();
   const spanElement = document.getElementById("slider-text");
 
   //toggle unit shown in temp toggle switch and weather grid
@@ -511,6 +581,23 @@ function chartsDescription(dayEl) {
   document.getElementById("charts-description").innerHTML = "Hourly weather for " + dateString + ":";
 }
 
+//conversion functions
+const fahrenheitTocelsius = (f) => {
+  return ((f - 32) * 5 / 9).toFixed(1);
+}
+
+const celsiusTofahrenheit = (c) => {
+  return ((c * 9 / 5) + 32).toFixed(1);
+}
+
+const inchesToMillimeters = (i) => {
+  return (i * 25.4).toFixed(1);
+}
+
+const millimetersToInces = (m) => {
+  return (m / 25.4).toFixed(1);
+}
+
 let myChart;
 let lastDataType = "Temperature";
 
@@ -524,7 +611,7 @@ function updateChart(dataType) {
   }
 
   //destroy chart if it exists so that a new one can replace it
-  if(document.querySelector("#charts").style.display === "flex") {
+  if(document.querySelector("#chart-map-container").style.display === "flex") {
     myChart.destroy();
   }
 
@@ -533,7 +620,6 @@ function updateChart(dataType) {
 
   const dayEl = document.getElementById("day" + ++clickedDay);
   chartsDescription(dayEl);
-
 
   const dataMapping = {
     "Temperature": { jsonObjName: "temperature_2m", unit: "°F" },
@@ -549,7 +635,7 @@ function updateChart(dataType) {
 
   if (typeof dataType === 'undefined') { dataType = "Temperature"; }
   
-  const { jsonObjName, unit } = dataMapping[dataType] || defaultType;
+  let { jsonObjName, unit } = dataMapping[dataType] || defaultType;
 
   clickedDay--;
   const apiData = JSON.parse(localStorage.getItem("apiData"));
@@ -557,10 +643,20 @@ function updateChart(dataType) {
   let hourlyData = [];
   //get percip data for every other hour in the day based on jsonObjName from switch statement
   for (let i = 0; i < 24; i += 2) {
-    const hourOfDay = i + clickedDay * 24;
+    let hourOfDay = i + clickedDay * 24;
     hourlyData.push(apiData.hourly[jsonObjName][hourOfDay]);
   }
   
+  if(document.querySelector('.slider-checkbox').checked) {
+    if(dataType === "Temperature") {
+      hourlyData = hourlyData.map((val) => { return fahrenheitTocelsius(val); });
+      unit = "°C";
+    } else if(dataType === "Precipitation") {
+      hourlyData = hourlyData.map((val) => { return inchesToMillimeters(val); });
+      unit = "mm";
+    }
+  }
+
   const ctx = document.getElementById("myChart").getContext("2d");
 
   //create background gradient
@@ -665,7 +761,7 @@ function updateChart(dataType) {
   
   //create chart
   myChart = new Chart(ctx, config);
-  document.querySelector("#charts").style.display = "flex";
+  document.querySelector("#chart-map-container").style.display = "flex";
 }
 
 document.getElementById("logo").addEventListener("click", () => {

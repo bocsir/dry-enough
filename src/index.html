@@ -30,7 +30,8 @@
                 <div id="form-background">
                     <form id="form" action="/submit" method="POST">
                         <label for="location">Enter a location</label>
-                        <input type="text" id="location" name="location" placeholder="ex: New York City/ 10007">
+                        <input type="text" id="location" name="location" placeholder="ex: New York City/ 10007" autocomplete="off">
+                        <ul id="suggestions"></ul>
                         <input type="submit" id="submit" value="Submit" onClick="submitForm(); return false">
                     </form>
                     <div class="slider-container">
@@ -270,20 +271,24 @@
 
                     </div>
 
-                    <div id="charts">
+                    <div id="chart-map-container">
                         <h3 id="charts-description"></h3>
                         <div class="chart">
                             <select class="chart-dropdown">
                                 <option value="1" onclick="updateChart('Temperature')">Temperature</option>
                                 <option value="2" onclick="updateChart('Precipitation')">Precipitation</option>
+                                <option value="6" onclick="updateChart('Percipitation Chance')">Percipitation Chance</option>
                                 <option value="3" onclick="updateChart('Humidity')">Humidity</option>
                                 <option value="4" onclick="updateChart('Cloud Cover')">Cloud Cover</option>
                                 <option value="5" onclick="updateChart('Wind Speed')">Wind Speed</option>
-                                <option value="6" onclick="updateChart('Percipitation Chance')">Percipitation Chance</option>
                             </select>
                             <canvas id="myChart"></canvas>
                         </div>
-                    </div>
+                        <div id="map-container">
+                            <img id="map" class="chart" alt="map"/>
+                            <a id="directions-link" target="_blank">get directions <i class="fa-solid fa-arrow-up-right-from-square"></i></a>    
+                        </div>
+                    </div>  
     
                 </div>
             </div>
