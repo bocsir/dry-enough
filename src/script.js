@@ -7,24 +7,24 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-const socket = new WebSocket('wss://dry-enough.onrender.com');
-//const socket = new WebSocket("ws://localhost:5500");
+//const socket = new WebSocket('wss://dry-enough.onrender.com');
+const socket = new WebSocket("ws://localhost:5500");
 let debounceTimeout;
 
 //search suggestions. make this run every second and not keyup
 document.getElementById("location").addEventListener("input", async function (event) {
 
   clearTimeout(debounceTimeout);
-
-  debounceTimeout = setTimeout(() => {
-    const location = 
-    document.getElementById("location").value
-    .replace(/,/g, '')
-    .split(" ")
-    .join("+");
-    socket.send('search:' + location);  
-  }, 500);
+    debounceTimeout = setTimeout(() => {
+      const location = 
+      document.getElementById("location").value
+      .replace(/,/g, '')
+      .split(" ")
+      .join("+");
+      socket.send('search:' + location);  
+    }, 500);  
   
+
 });
 
 let day = 0;
@@ -318,7 +318,7 @@ async function submitForm() {
   document.getElementById("weather-results").style.display = "none";
   document.getElementById("weather-grid").style.display = "none";
   document.getElementById("chart-map-desc-container").style.display = "none";
-  document.getElementById('suggestions');
+  document.getElementById('suggestions').style.display = 'none';
   //create directions link
   const directionsLink = document.getElementById("directions-link");
   directionsLink.href = 'https://www.google.com/maps/dir/' + document.getElementById("location").value;
@@ -447,6 +447,7 @@ function formatDate(date, day) {
   return dateString;
 }
 
+
 //spin linear gradient until form is loaded
 async function gradientBorder() {
   let borderElement = document.getElementById("form-border");
@@ -460,8 +461,8 @@ async function gradientBorder() {
     borderElement.style.background =
       "linear-gradient(" + deg + "deg, rgb(217, 219, 221) 40%, rgb(91, 0, 227) 60%";
   }
-
   updateChart("Temperature", true);
+
 }
 
 function showError() {
@@ -519,6 +520,7 @@ checkboxElement.addEventListener("change", swapTempUnit);
 
 function swapTempUnit() {
   updateChart();
+  document.getElementById('suggestions').style.display = none;
   const spanElement = document.getElementById("slider-text");
 
   //toggle unit shown in temp toggle switch and weather grid
