@@ -402,9 +402,6 @@ form label {
 #chart-map-desc-container {
     display: none;
     flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    gap: 20px;
 }
 
 #map-container {
@@ -433,6 +430,7 @@ a:visited{
 
 #charts-description {
     margin-left: 5px;
+    margin-top: 70px;
 }
 
 #tip {
@@ -485,40 +483,22 @@ h3 {
 .chart-map-container {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 35px;
     align-items: center;
-    justify-content: center;
 }
 
-@media (max-width: 525px) {
-    header {
-        font-size: 0.9rem;
-    }
-
-    #weather-grid {
-        scale: .8;
-        margin-top: -45px;
-        height: 696px; 
-    }
-
-    #charts-description{
-        text-align: center;
-
-    }
-
-    #map-container {
-        margin-top: -35px;
-    }
-
-    #chart-map-desc-container {
-        margin-top: -70px;
-        gap: 0;
-    }
-}
 
 @media(max-width: 1150px) {
     #results-charts-container {
         flex-direction: column;
+    }
+
+    #chart-map-desc-container {
+        align-items: center;
+    }
+
+    #charts-description {
+        margin-top: 0;
     }
 
     h3 {
@@ -548,7 +528,40 @@ h3 {
 
 }
 
+@media (max-width: 525px) {
+    header {
+        font-size: 0.9rem;
+    }
+
+    #weather-grid {
+        scale: .8;
+        margin-top: -45px;
+        height: 696px; 
+    }
+
+    #charts-description{
+        text-align: center;
+
+    }
+
+    #map-container {
+        margin-top: -35px;
+    }
+
+    #chart-map-desc-container {
+        margin-top: -70px;
+        gap: 0;
+    }
+}
+
+
 @media(max-width: 450px) {
+    .chart-dropdown {
+        left: auto;
+        top: 10px;
+        scale: 1.5;
+    }
+
     #chart-map-desc-container {
         margin-top: -70px;
     }

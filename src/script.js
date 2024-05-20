@@ -318,7 +318,7 @@ async function submitForm() {
   document.getElementById("weather-results").style.display = "none";
   document.getElementById("weather-grid").style.display = "none";
   document.getElementById("chart-map-desc-container").style.display = "none";
-  
+  document.getElementById('suggestions');
   //create directions link
   const directionsLink = document.getElementById("directions-link");
   directionsLink.href = 'https://www.google.com/maps/dir/' + document.getElementById("location").value;
