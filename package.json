@@ -10,6 +10,7 @@
     "express-ws": "^5.0.2",
     "firebase": "^10.8.1",
     "helmet": "^7.1.0",
+    "moment-timezone": "^0.5.45",
     "node-fetch": "^2.7.0",
     "path": "^0.12.7",
     "serverless-http": "^3.2.0",

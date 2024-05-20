@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-const socket = new WebSocket('wss://dry-enough.onrender.com');
-//const socket = new WebSocket("ws://localhost:5500");
+//const socket = new WebSocket('wss://dry-enough.onrender.com');
+const socket = new WebSocket("ws://localhost:5500");
 let debounceTimeout;
 
 //search suggestions. make this run every second and not keyup
@@ -470,6 +470,7 @@ function showError() {
   document.getElementById("results-header").style.display = "block";
   document.getElementById("weather-results").style.display = "flex";
   document.getElementById("weather-grid").style.display = "none";
+  document.getElementById("chart-map-desc-container").style.display = "none";
   formLoaded = true;
 }
 
@@ -502,6 +503,7 @@ socket.onmessage = function (event) {
   } else {
     //display weather on successful response, ask user to reenter location on bad response
     if (receivedMsg === "bad response") {
+      document.getElementById("chart-map-desc-container").style.display = "none";
       showError();
     } else {
       localStorage.setItem("apiData", receivedMsg);
