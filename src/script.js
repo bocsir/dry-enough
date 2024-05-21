@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-//const socket = new WebSocket('wss://dry-enough.onrender.com');
-const socket = new WebSocket("ws://localhost:5500");
+const socket = new WebSocket('wss://dry-enough.onrender.com');
+//const socket = new WebSocket("ws://localhost:5500");
 let debounceTimeout;
 
 //search suggestions. make this run every second and not keyup
