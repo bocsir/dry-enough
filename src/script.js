@@ -242,6 +242,25 @@ document.addEventListener('click', (e) => {
   }
 }) 
 
+function displaySunData(data) {
+  const sunRiseTime = data.riseTime;
+  const sunSetTime = data.setTime;
+  document.getElementById('set-time').innerHTML = sunSetTime;
+  document.getElementById('rise-time').innerHTML = sunRiseTime;
+
+  const sunRiseRad = data.riseAzimuth.azimuth;
+  const sunSetRad = data.setAzimuth.azimuth;
+  const riseEl = document.getElementById('sunrise-circle');
+  riseEl.style.rotate = `${Number(sunRiseRad)}rad`;
+  const riseIconsEl = riseEl.querySelector('.sun-icons');
+  riseIconsEl.style.rotate = `${-1*Number(sunRiseRad)}rad`
+
+  const setEl = document.getElementById('sunset-circle');
+  setEl.style.rotate = `${Number(sunSetRad)}rad`;
+  const setIconsEl = setEl.querySelector('.sun-icons');
+  setIconsEl.style.rotate = `${-1*Number(sunSetRad)}rad`;
+}
+
 function displaySuggestions(suggestionsArr) {
   const suggestionsContainer = document.getElementById("suggestions");
   suggestionsContainer.innerHTML = "";
@@ -288,6 +307,7 @@ function wait(ms) {
 async function popLoader() {
   for (let i = 1; i < 12; i++) {
     await wait(200);
+    document.getElementById("suggestions").style.display = 'none';
     const el = document.getElementById("day" + i);
     el.style.display = "flex";
 
@@ -321,7 +341,7 @@ async function submitForm() {
   document.getElementById('suggestions').style.display = 'none';
   //create directions link
   const directionsLink = document.getElementById("directions-link");
-  directionsLink.href = 'https://www.google.com/maps/dir/' + document.getElementById("location").value;
+  directionsLink.href = 'https://www.google.com/maps/place/' + document.getElementById("location").value;
 
   const dropDownVal = document.querySelector('.chart-dropdown');
   dropDownVal.value = '1';
@@ -462,7 +482,7 @@ async function gradientBorder() {
       "linear-gradient(" + deg + "deg, rgb(217, 219, 221) 40%, rgb(91, 0, 227) 60%";
   }
   updateChart("Temperature", true);
-
+  getDate(true);
 }
 
 function showError() {
@@ -501,6 +521,9 @@ socket.onmessage = function (event) {
   }else if(receivedMsg.includes("suggestions:")) {
     const suggestions = receivedMsg.slice(12);
     displaySuggestions(JSON.parse(suggestions));
+  } else if(receivedMsg.includes("sun data:")) {
+    const data = receivedMsg.substring("sun data:".length);
+    displaySunData(JSON.parse(data));
   } else {
     //display weather on successful response, ask user to reenter location on bad response
     if (receivedMsg === "bad response") {
@@ -575,9 +598,9 @@ for (let i = 0; i < weatherItems.length; i++) {
     document.getElementById('tip').style.display = 'none';
     localStorage.setItem("clickedDay", i);
     updateChart();
+    getDate(false);
   });
 }
-
 
 function chartsDescription(dayEl, clickedDay) {
   let dateString = dayEl.querySelector(".inline-span").querySelector(".date").innerHTML.replace("<br>", " ");
@@ -594,21 +617,21 @@ function chartsDescription(dayEl, clickedDay) {
 }
 
 //conversion functions
-const fahrenheitTocelsius = (f) => {
+const fahrenheitToCelsius = (f) => {
   return ((f - 32) * 5 / 9).toFixed(1);
 }
 
-const celsiusTofahrenheit = (c) => {
-  return ((c * 9 / 5) + 32).toFixed(1);
-}
+// const celsiusTofahrenheit = (c) => {
+//   return ((c * 9 / 5) + 32).toFixed(1);
+// }
 
 const inchesToMillimeters = (i) => {
   return (i * 25.4).toFixed(1);
 }
 
-const millimetersToInces = (m) => {
-  return (m / 25.4).toFixed(1);
-}
+// const millimetersToInces = (m) => {
+//   return (m / 25.4).toFixed(1);
+// }
 
 let myChart;
 let lastDataType = "Temperature";
@@ -665,7 +688,7 @@ function updateChart(dataType, showToday) {
   
   if(document.querySelector('.slider-checkbox').checked) {
     if(dataType === "Temperature") {
-      hourlyData = hourlyData.map((val) => { return fahrenheitTocelsius(val); });
+      hourlyData = hourlyData.map((val) => { return fahrenheitToCelsius(val); });
       unit = "°C";
     } else if(dataType === "Precipitation") {
       hourlyData = hourlyData.map((val) => { return inchesToMillimeters(val); });
@@ -783,3 +806,13 @@ function updateChart(dataType, showToday) {
 document.getElementById("logo").addEventListener("click", () => {
   window.location.href = "index.html";
 });
+
+//Sunrise and set stuff
+async function getDate(today) {
+
+  const dayIndex = (today) ? 3 : localStorage.getItem('clickedDay');
+  
+  const data = JSON.parse(localStorage.getItem('apiData'));
+  const dateStr = data.daily.time[dayIndex];
+  socket.send('date:' + dateStr);
+}

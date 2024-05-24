@@ -2,6 +2,7 @@
 const fetch = require('node-fetch'); 
 const bodyParser = require('body-parser');
 const moment = require('moment-timezone');
+const sunCalc = require('suncalc');
 
 //get API key from .env
 require('dotenv').config();
@@ -29,6 +30,9 @@ app.ws('/', (ws) => {
         if(message.includes("search:")) {
             message = message.slice(7);
             getSearchSuggestions(message, ws);
+        }else if (message.includes('date:')){
+            message = message.slice(5);
+            getSunData(message, ws);
         } else {
             //start geo and weather API calls
             callApi(message, ws);
@@ -65,6 +69,34 @@ async function getSearchSuggestions(location, ws) {
     }
 }
 
+function formatTime(timeString) {
+    let [hourString, minute] = timeString.split(":");
+    //ex. 7:6AM -> 7:06AM 
+    minute = (+minute < 10 ? `0${minute}` : minute);
+    //convert to a number and ensure is 0-23
+    const hour = +hourString % 24;
+    //if divisible, return modulus, :, minute, ternary for AM / PM
+    return (hour % 12 || 12) + ":" + minute + (hour < 12 ? "AM" : "PM");
+}
+function getSunData(date, ws) {
+    let dateObj = new Date(date);
+    const times = sunCalc.getTimes(dateObj, lat, lon);
+    const sunRiseStr = formatTime(times.sunrise.getHours() + ':' + times.sunrise.getMinutes());
+    const sunSetStr = formatTime(times.sunset.getHours() + ':' + times.sunset.getMinutes());
+
+    const sunRiseAzimuth = sunCalc.getPosition(times.sunrise, lat, lon);
+    const sunSetAzimuth = sunCalc.getPosition(times.sunset, lat, lon);
+
+    const sunData = {
+        riseTime: sunRiseStr,
+        setTime: sunSetStr,
+        riseAzimuth: sunRiseAzimuth,
+        setAzimuth: sunSetAzimuth,
+    };
+    
+    ws.send('sun data:' + JSON.stringify(sunData))
+}
+
 //make API calls, send successful responses immediately to client
 async function callApi(location, ws) {
 
@@ -75,8 +107,8 @@ async function callApi(location, ws) {
             const loc = location.split("+").join("%20");
             const coordsResponse = await fetch("https://us1.locationiq.com/v1/search?key=" + forwardGeoKey + "&q=" + loc + "&format=json&");
             const coordsData = await coordsResponse.json();
-            let lat = coordsData[0].lat;
-            let lon = coordsData[0].lon;
+            lat = coordsData[0].lat;
+            lon = coordsData[0].lon;
 
             const mapUrl = 'https://maps.locationiq.com/v3/staticmap?key=' + forwardGeoKey + '&center=' + lat + ',' + lon + '&zoom='+'10' +'&size=550x325&format=png&maptype=street';
             const mapData = await fetch(mapUrl);
@@ -96,13 +128,16 @@ async function callApi(location, ws) {
             if(!mapData.ok) {
                 console.error("bad response: ", mapData);
             } else {
-                ws.send('img:'+ mapData.url);
+                ws.send('img:' + mapData.url);
             }
 
             //get timezone with moment-timezone library
             const timezone = moment.tz.guess();
 
-            weatherApiUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current=temperature_2m,relative_humidity_2m,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&hourly=precipitation_probability,temperature_2m,relative_humidity_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,precipitation_probability_max,sunset,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&past_days=3&forecast_days=8&timezone=" + timezone ;
+            weatherApiUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + 
+                "&longitude=" + lon + 
+                "&current=temperature_2m,relative_humidity_2m,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&hourly=precipitation_probability,temperature_2m,relative_humidity_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,precipitation_probability_max,sunset,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&past_days=3&forecast_days=8" +
+                "&timezone=" + timezone ;
         } catch(error) {
             console.error("error: ", error);
             ws.send("bad response");

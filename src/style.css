@@ -425,6 +425,20 @@ form label {
     height: 285px;
 }
 
+#sun-times {
+    position: absolute;
+    left: 5px;
+    top: 10px;
+    padding: 5px;
+    background-color: #040817e5;
+    color: white;
+    font-family: 'mono', monospace;
+    font-size: 1rem;
+    border-radius: 5px;
+    text-align: center;
+}
+
+
 #directions-link {
     position: absolute;
     bottom: 5px;
@@ -465,13 +479,17 @@ a:visited{
     position: absolute;
     top: 8px;
     left: 8px;
-    background-color: rgb(44, 49, 99);
+    background-color: rgb(91, 0, 227);
     color: white;
     border-radius: 5px;
     border: transparent;
     cursor: pointer;
     font-family: 'mono', monospace;
     padding: 5px;
+}
+
+option, select {
+    cursor:pointer;
 }
 
 h3 {
@@ -484,6 +502,34 @@ h3 {
     object-fit: cover;
     padding: 0; 
     margin-top: 5px;
+}
+
+/* circles will be rotated based on azimuth */
+/* .sun-icons need to be rotated the opposite direction*/
+#sunrise-circle, #sunset-circle {
+    aspect-ratio: 1 / 1;
+    height: 90%;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+}
+
+.sun-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: black;
+    height: min-content;
+    font-size: 1.8rem;
+    position: relative;
+    top: 100%;
+}
+
+.sun-icons .fa-arrow-up, .sun-icons .fa-arrow-down {
+    position: absolute;
+    top: 11px;
+    font-size: 1.2rem;
 }
 
 #results-charts-container {
@@ -589,6 +635,10 @@ h3 {
 
     .chart-map-container {
         margin-top: -20px;
+    }
+
+    #sun-times {
+        font-size: .7rem;
     }
 }
 
