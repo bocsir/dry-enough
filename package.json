@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@photostructure/tz-lookup": "^10.0.0",
     "@types/node": "^20.11.20",
     "axios": "^1.6.8",
     "body-parser": "^1.20.2",
