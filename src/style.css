@@ -532,8 +532,8 @@ h3 {
 
 .sun-icons .fa-arrow-up, .sun-icons .fa-arrow-down {
     position: absolute;
-    top: 11px;
-    font-size: 1.2rem;
+    top: 15px;
+    font-size: .8rem;
 }
 
 #results-charts-container {
