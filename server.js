@@ -1,7 +1,6 @@
 //load fetch module for calling API
 const fetch = require('node-fetch'); 
 const bodyParser = require('body-parser');
-const moment = require('moment-timezone');
 const sunCalc = require('suncalc');
 
 //get API key from .env
@@ -130,13 +129,10 @@ async function callApi(location, ws) {
                 ws.send('img:' + mapData.url);
             }
 
-            //get timezone with moment-timezone library
-            const timezone = moment.tz.guess();
-
             weatherApiUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + 
                 "&longitude=" + lon + 
                 "&current=temperature_2m,relative_humidity_2m,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&hourly=precipitation_probability,temperature_2m,relative_humidity_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,precipitation_probability_max,sunset,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&past_days=3&forecast_days=8" +
-                "&timezone=" + timezone ;
+                "&timezone=auto" ;
         } catch(error) {
             console.error("error: ", error);
             ws.send("bad response");
