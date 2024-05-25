@@ -811,7 +811,7 @@ document.getElementById("logo").addEventListener("click", () => {
 async function getDate(today) {
 
   const dayIndex = (today) ? 3 : localStorage.getItem('clickedDay');
-  
+
   const data = JSON.parse(localStorage.getItem('apiData'));
   const dateStr = data.daily.time[dayIndex];
   socket.send('date:' + dateStr);

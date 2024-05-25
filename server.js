@@ -83,7 +83,6 @@ function getSunData(date, ws) {
     const times = sunCalc.getTimes(dateObj, lat, lon);
     const sunRiseStr = formatTime(times.sunrise.getHours() + ':' + times.sunrise.getMinutes());
     const sunSetStr = formatTime(times.sunset.getHours() + ':' + times.sunset.getMinutes());
-
     const sunRiseAzimuth = sunCalc.getPosition(times.sunrise, lat, lon);
     const sunSetAzimuth = sunCalc.getPosition(times.sunset, lat, lon);
 

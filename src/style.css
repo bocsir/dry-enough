@@ -264,6 +264,10 @@ form label {
     font-size: 1rem;
 }
 
+#weather-grid:first-child .weather-item .inline-span{
+    width: 92px;
+}
+
 #weather-grid {
     margin: 30px;
     display: flex;
@@ -309,7 +313,7 @@ form label {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 52px;
+    width: 90px;
 }
 
 .percip-percent {
@@ -435,7 +439,7 @@ form label {
     font-family: 'mono', monospace;
     font-size: 1rem;
     border-radius: 5px;
-    text-align: center;
+    text-align: left;
 }
 
 
