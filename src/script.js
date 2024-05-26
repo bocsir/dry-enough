@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-//const socket = new WebSocket('wss://dry-enough.onrender.com');
-const socket = new WebSocket("ws://localhost:5500");
+const socket = new WebSocket('wss://dry-enough.onrender.com');
+//const socket = new WebSocket("ws://localhost:5500");
 let debounceTimeout;
 let li;
 const suggestionsListEl = document.getElementById('suggestions')
