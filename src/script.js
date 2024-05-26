@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-const socket = new WebSocket('wss://dry-enough.onrender.com');
-//const socket = new WebSocket("ws://localhost:5500");
+//const socket = new WebSocket('wss://dry-enough.onrender.com');
+const socket = new WebSocket("ws://localhost:5500");
 let debounceTimeout;
 let li;
 const suggestionsListEl = document.getElementById('suggestions')
@@ -235,10 +235,6 @@ document.addEventListener('click', (e) => {
 });
 
 function displaySunData(data) {
-  //times
-  document.getElementById('set-time').innerHTML = data.setTime;
-  document.getElementById('rise-time').innerHTML = data.riseTime;
-
   //azimuth
   const sunRiseRad = data.riseAzimuth.azimuth;
   const sunSetRad = data.setAzimuth.azimuth;
@@ -772,27 +768,32 @@ document.getElementById("logo").addEventListener("click", () => {
 //Sunrise and set stuff
 async function getDate(today) {
 
-  //use current day if not called from a clicked day card, where today would be false
-  const dayIndex = (today) ? 4 : localStorage.getItem('clickedDay');
+  //get current or clicked day from apidata
+  const dayIndex = (today) ? 3 : localStorage.getItem('clickedDay');
+  const data = JSON.parse(localStorage.getItem('apiData'));
+
+  document.getElementById('rise-time').innerHTML = formatTime(data.daily.sunrise[dayIndex]);
+  document.getElementById('set-time').innerHTML = formatTime(data.daily.sunset[dayIndex]);
 
   //make Date object
-  const data = JSON.parse(localStorage.getItem('apiData'));
   const dateNum = data.daily.time[dayIndex];
   const dateObj = new Date(dateNum);
 
-  //make a string to create future Date obj adjusted for timezone
+  //make a string to create future Date obj
   let dateStr = JSON.stringify(dateObj);
-  let tzDate = dateStr.slice(1);
-  tzDate = tzDate.substring(0, tzDate.length-2);
+  dateStr = dateStr.slice(1);
+  dateStr = dateStr.substring(0, dateStr.length-2);
 
-  //get offset between client timezone and UTC in form like -04:00
-  const offset = dateObj.getTimezoneOffset();
-  const hours = Math.floor(Math.abs(offset) / 60);
-  const minutes = Math.abs(offset) % 60;
-  const sign = offset >=0 ? '-' : '+';
-  const formattedOffset = (`${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
+  socket.send(`date:${dateStr}`);
+}
 
-  tzDate = tzDate + formattedOffset;
+function formatTime(timeString) {
+  let [hourString, minute] = timeString.split(":");
+  hourString = hourString.substring(11);
 
-  socket.send(`date:${formattedOffset}`);
+  //take off leading 0 if there is one
+  let hour = +hourString < 10 ? (hourString.substring(1)) : hourString;
+  hour = (+hour > 12) ? +hour - 12 : hour;
+  //if divisible, return modulus, :, minute, ternary for AM / PM
+  return hour + ":" + minute + (+hourString < 12 ? "AM" : "PM");
 }
