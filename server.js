@@ -26,12 +26,13 @@ app.ws('/', (ws) => {
     console.log('Client connected');
 
     ws.on('message', (message) => {
-        console.log(`Received message:, ${message}`);
+        console.log(`Received message: ${message}`);
         if(message.includes("search:")) {
             msg = message.slice(7);
             getSearchSuggestions(msg, ws);
         }else if (message.includes('date:')){
             message = message.slice(5);
+            console.log(message);
             getSunData(message, ws);
         } else {
             //start geo and weather API calls
@@ -69,21 +70,57 @@ async function getSearchSuggestions(location,  ws) {
     }
 }
 
-function formatTime(timeString) {
+function formatTime(timeString, offset) {
     let [hourString, minute] = timeString.split(":");
+    let[hourDiff, minDiff] = offset.split(':');
+
+    //adjust for timezone offset from UTC
+    const sign = hourDiff.charAt(0);
+
+    hourDiff.substring(1);
+    hourDiff = (+hourDiff < 10) ? hourDiff.substring(1) : hourDiff;
+
+    if (sign === '+') {
+        minute += minDiff;
+        hourString += hourDiff;    
+    } else {
+        minute -= minDiff;
+        hourString -= hourDiff;
+    }
+
     //ex. 7:6AM -> 7:06AM 
-    minute = (+minute < 10 ? `0${minute}` : minute);
+    minute = (+minute < 10) ? `0${minute}` : minute;
+    hourString = (minute > 59) ? +hourString++ : hourString;
     //convert to a number and ensure is 0-23
-    const hour = +hourString % 24;
+    const hour = (+hourString % 24);
     //if divisible, return modulus, :, minute, ternary for AM / PM
     return (hour % 12 || 12) + ":" + minute + (hour < 12 ? "AM" : "PM");
 }
 
-function getSunData(dateStr, ws) {
-    const dateObj = new Date(dateStr);
+// function getSunData(dateStr, ws) {
+//     console.log('date string: ', dateStr);
+//     const dateObj = new Date(dateStr);
+//     console.log(dateObj);
+//     const times = sunCalc.getTimes(dateObj, lat, lon);
+//     const sunRiseStr = formatTime(times.sunrise.getHours() + ':' + times.sunrise.getMinutes());
+//     const sunSetStr = formatTime(times.sunset.getHours() + ':' + times.sunset.getMinutes());
+//     const sunRiseAzimuth = sunCalc.getPosition(times.sunrise, lat, lon);
+//     const sunSetAzimuth = sunCalc.getPosition(times.sunset, lat, lon);
+
+//     const sunData = {
+//         riseTime: sunRiseStr,
+//         setTime: sunSetStr,
+//         riseAzimuth: sunRiseAzimuth,
+//         setAzimuth: sunSetAzimuth,
+//     };
+    
+//     ws.send('sun data:' + JSON.stringify(sunData))
+// }
+function getSunData(offset, ws) {
+    const dateObj = new Date();
     const times = sunCalc.getTimes(dateObj, lat, lon);
-    const sunRiseStr = formatTime(times.sunrise.getHours() + ':' + times.sunrise.getMinutes());
-    const sunSetStr = formatTime(times.sunset.getHours() + ':' + times.sunset.getMinutes());
+    const sunRiseStr = formatTime(times.sunrise.getHours() + ':' + times.sunrise.getMinutes(), offset);
+    const sunSetStr = formatTime(times.sunset.getHours() + ':' + times.sunset.getMinutes(), offset);
     const sunRiseAzimuth = sunCalc.getPosition(times.sunrise, lat, lon);
     const sunSetAzimuth = sunCalc.getPosition(times.sunset, lat, lon);
 
@@ -96,6 +133,7 @@ function getSunData(dateStr, ws) {
     
     ws.send('sun data:' + JSON.stringify(sunData))
 }
+
 
 //make API calls, send successful responses immediately to client
 async function callApi(location, ws) {
