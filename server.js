@@ -26,10 +26,9 @@ app.ws('/', (ws) => {
     console.log('Client connected');
 
     ws.on('message', (message) => {
-        console.log('Received message:', message);
+        console.log(`Received message:, ${message}`);
         if(message.includes("search:")) {
             msg = message.slice(7);
-
             getSearchSuggestions(msg, ws);
         }else if (message.includes('date:')){
             message = message.slice(5);
@@ -79,8 +78,9 @@ function formatTime(timeString) {
     //if divisible, return modulus, :, minute, ternary for AM / PM
     return (hour % 12 || 12) + ":" + minute + (hour < 12 ? "AM" : "PM");
 }
-function getSunData(date, ws) {
-    let dateObj = new Date(date);
+
+function getSunData(dateStr, ws) {
+    const dateObj = new Date(dateStr);
     const times = sunCalc.getTimes(dateObj, lat, lon);
     const sunRiseStr = formatTime(times.sunrise.getHours() + ':' + times.sunrise.getMinutes());
     const sunSetStr = formatTime(times.sunset.getHours() + ':' + times.sunset.getMinutes());
@@ -131,7 +131,6 @@ async function callApi(location, ws) {
                 ws.send('img:' + mapData.url);
             }
             const tz = tzlookup(lat, lon);
-            console.log(tz);
             weatherApiUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + 
                 "&longitude=" + lon + 
                 "&current=temperature_2m,relative_humidity_2m,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&hourly=precipitation_probability,temperature_2m,relative_humidity_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,precipitation_probability_max,sunset,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&past_days=3&forecast_days=8" +

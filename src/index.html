@@ -276,7 +276,7 @@
                             <div class="chart">
                                 <select class="chart-dropdown">
                                     <option value="1" onclick="updateChart('Temperature')">Temperature</option>
-                                    <option value="6" onclick="updateChart('Percipitation Chance')">Percipitation Chance</option>
+                                    <option value="6" onclick="updateChart('Precipitation Chance')">Percipitation Chance</option>
                                     <option value="2" onclick="updateChart('Precipitation')">Precipitation</option>
                                     <option value="3" onclick="updateChart('Humidity')">Humidity</option>
                                     <option value="4" onclick="updateChart('Cloud Cover')">Cloud Cover</option>
@@ -286,6 +286,7 @@
                             </div>
                             <div id="map-container">
                                 <img id="map" class="chart" alt="map"/>
+                                <div id="map-overlay"></div>
                                 <div id="sun-times">
                                         <i class="fa-solid fa-arrow-up"></i>
                                         <span id="rise-time"></span></span><br>

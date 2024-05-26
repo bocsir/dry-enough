@@ -7,13 +7,20 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-const socket = new WebSocket('wss://dry-enough.onrender.com');
-//const socket = new WebSocket("ws://localhost:5500");
+//const socket = new WebSocket('wss://dry-enough.onrender.com');
+const socket = new WebSocket("ws://localhost:5500");
 let debounceTimeout;
-
-//search suggestions. make this run every second and not keyup
+let li;
+const suggestionsListEl = document.getElementById('suggestions')
+let first = true;
 document.getElementById("location").addEventListener("input", async function (event) {
 
+  if(document.getElementById('location').value === '' || suggestionsListEl.innerHTML !== '') {
+    suggestionsListEl.style.display = 'none';
+  }
+
+  let pause = (first) ? 0 : 500;
+  first = false
   clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
       const location = 
@@ -22,9 +29,7 @@ document.getElementById("location").addEventListener("input", async function (ev
       .split(" ")
       .join("+");
       socket.send('search:' + location);  
-    }, 500);  
-  
-
+    }, pause);  
 });
 
 let day = 0;
@@ -130,46 +135,42 @@ function displayMapImg(url) {
 }
 
 function showLocation(locationObj) {
-  //set results header to show location
+  //set results header to show location name
   const resultsHeader = document.getElementById("results-header");
 
-  const locationName = locationObj[0].name;
-  const locationRegion = locationObj[0].state;
+  //get names
+  const locationName = locationObj[0].name + ', ';
+  const locationRegion = locationObj[0].state + ', ';
   const locationCountry = locationObj[0].country;
 
+  //use names if theyre there
   let headerString = "Weather for ";
-  if (locationName) {
-    headerString += locationName;
-  }
-  if (locationRegion) {
-    headerString += ", " + locationRegion;
-  }
-  if (locationCountry) {
-    headerString += ", " + locationCountry;
-  }
-  headerString += ":";
+  headerString += (locationName) ? locationName : '';
+  headerString += (locationRegion) ? locationRegion : '';
+  headerString += (locationCountry) ? locationCountry : '';
+  headerString += ':';
+
   resultsHeader.innerHTML = headerString;
 }
 
 async function displayWeather(data, day) {
+  //pop load weather grid and exit function when all days loaded
   if (day === 11) {
-    //stop gradient spin
-    //show weather grid
     document.getElementById("weather-grid").style.display = "grid";
     document.getElementById("weather-results").style.display = "flex";
     popLoader();
     return;
   }
 
+  //current day stuff
   if (day === 3) {
     const currentTemp = document.getElementById("current-temp");
     currentTemp.innerHTML = data.current.temperature_2m;
-
     setCurrentWeatherStatus(data.current.weather_code);
   }
 
-  const nextDay = day + 1;
-  const weatherItem = document.getElementById("day" + nextDay);
+  const currentDay = day + 1;
+  const weatherItem = document.getElementById("day" + currentDay);
 
   //set weather icon emoji
   const weatherIcon = weatherItem.querySelector(".weather-icon");
@@ -180,19 +181,19 @@ async function displayWeather(data, day) {
   const formattedDate = formatDate(data.daily.time[day], day);
   weatherDate.innerHTML = formattedDate;
 
-  //set percipitation sum
+  //set precipitation
   const weatherData = weatherItem.querySelector(".weather-data");
   const percipEl = weatherData.querySelector(".percip-data");
   const precipInches = data.daily.precipitation_sum[day];
   percipEl.innerHTML = " " + precipInches + " in.";
 
+  //fill percip arrays for unit toggle
   percipData[day].percipInches = precipInches;
   percipData[day].percipMillimeters = (precipInches * 25.4).toFixed(1);
 
   //set max and min temps
   const maxTempF = weatherData.querySelector(".max-temp");
   const minTempF = weatherData.querySelector(".min-temp");
-
   const maxF = data.daily.temperature_2m_max[day];
   const minF = data.daily.temperature_2m_min[day];
 
@@ -200,7 +201,7 @@ async function displayWeather(data, day) {
   maxTempF.innerHTML = maxF;
   minTempF.innerHTML = minF;
 
-  //put values for max and min celsius and fahrenheit in temperatureData object
+  //fill temp arrays for unit toggle
   temperatureData[day].maxFahrenheit = maxF;
   temperatureData[day].minFahrenheit = minF;
   temperatureData[day].maxCelsius = ((maxF - 32) / 1.8).toFixed(1);
@@ -210,124 +211,119 @@ async function displayWeather(data, day) {
   let percentage = data.daily.precipitation_probability_max[day];
   const percipPercent = weatherItem.querySelector(".percip-percent");
 
-  if (day >= 3) {
-    percipPercent.innerHTML = percentage + "%";
-  } else {
-    if (precipInches === 0) {
-      percentage = 0;
-    }
-  }
+  //No need for chance on past days
+  if (day >= 3) { percipPercent.innerHTML = percentage + "%"; } 
 
+  //set card color between white and blue based on precip
   const hue = 240;
-  const lightness = 100 - percentage / 2;
   const saturation = 100;
+  const lightness = 100 - percentage / 2;
   const color =
     "hsla(" + hue + ", " + saturation + "%, " + lightness + "%, .8)";
   weatherItem.style.borderColor = color;
   weatherItem.style.backgroundColor =
     "hsla(" + hue + ", " + saturation + "%, " + lightness + "%, .25)";
 
-  //call to fill in next days info
+  //call again for next day
   displayWeather(data, day + 1);
-  return { error: false };
 }
 
+//hide / show suggestions list if user clicks in or out of location input
 document.addEventListener('click', (e) => {
-  if(e.target.id === 'suggestions') {
-    document.getElementById("suggestions").style.display = "none";
-} else if(e.target.id === 'location' && document.getElementById("suggestions").children.length > 0) {
-    document.getElementById("suggestions").style.display = "flex";
-  } else {
-    document.getElementById("suggestions").style.display = "none";
-  }
-}) 
+  const suggestions = document.getElementById("suggestions");
+  suggestions.style.display = (e.target.id === 'location' && suggestions.innerHTML !== '') ? 'flex' : 'none';
+});
 
 function displaySunData(data) {
-  const sunRiseTime = data.riseTime;
-  const sunSetTime = data.setTime;
-  document.getElementById('set-time').innerHTML = sunSetTime;
-  document.getElementById('rise-time').innerHTML = sunRiseTime;
+  //times
+  document.getElementById('set-time').innerHTML = data.setTime;
+  document.getElementById('rise-time').innerHTML = data.riseTime;
 
+  //azimuth
   const sunRiseRad = data.riseAzimuth.azimuth;
   const sunSetRad = data.setAzimuth.azimuth;
+
+  //rotation based on azimuth
   const riseEl = document.getElementById('sunrise-circle');
   riseEl.style.rotate = `${Number(sunRiseRad)}rad`;
-  const riseIconsEl = riseEl.querySelector('.sun-icons');
-  riseIconsEl.style.rotate = `${-1*Number(sunRiseRad)}rad`
-
   const setEl = document.getElementById('sunset-circle');
   setEl.style.rotate = `${Number(sunSetRad)}rad`;
+
+  //rotate icons back
+  const riseIconsEl = riseEl.querySelector('.sun-icons');
+  riseIconsEl.style.rotate = `${-1*Number(sunRiseRad)}rad`
   const setIconsEl = setEl.querySelector('.sun-icons');
   setIconsEl.style.rotate = `${-1*Number(sunSetRad)}rad`;
 }
 
 function displaySuggestions(suggestionsArr) {
+  //reset suggestions
   const suggestionsContainer = document.getElementById("suggestions");
   suggestionsContainer.innerHTML = "";
 
-  let len = 5;
-  if(suggestionsArr.length < 5) {
-    len = suggestionsArr.length;
-  }
+  //allow for <=5 suggestions
+  let len = (suggestionsArr.length < 5) ? suggestionsArr.length : 5;
 
-  for(let i = 0; i < len; i++) {
-    if (typeof(suggestionsArr[i]) === "undefined") { 
+  for (let i = 0; i < len; i++) {
+    //no input value
+    if (document.getElementById('location').value === '') {
+      suggestionsArr = [];
+      suggestionsContainer.innerHTML = "";
+      break;
+    
+    //no results found, show error
+    } else if (typeof(suggestionsArr[i]) === "undefined") { 
       const suggestionElement = document.createElement("li");
       suggestionElement.classList.add("suggestion");
-      suggestionElement.innerHTML = 'error: check spelling';
-      suggestionsContainer.appendChild(suggestionElement);     
-      document.getElementById("suggestions").style.display = "flex"; 
+      suggestionElement.innerHTML = 'Location not found, check spelling';
+      suggestionsContainer.appendChild(suggestionElement);
+      suggestionsContainer.style.display = "flex"; 
       break;
-    }
+    } 
+    //create suggestion and append it to list
     const suggestion = suggestionsArr[i];
     const suggestionElement = document.createElement("li");
     suggestionElement.classList.add("suggestion");
     suggestionElement.innerHTML = suggestion.display_name;
     suggestionsContainer.appendChild(suggestionElement);     
-    document.getElementById("suggestions").style.display = "flex"; 
+    suggestionsContainer.style.display = "flex"; 
   }  
   addEventListeners();
 }
 
+//when suggestion clicked, use it as location and submit form
 function addEventListeners() {
   document.querySelectorAll('.suggestion').forEach(el => {
     el.addEventListener('click', () => {
+      document.getElementById("suggestions").style.display = 'none';
       document.getElementById("location").value = el.innerHTML;
       submitForm();
     });
   });
 }
 
+//adjustable pause time
 function wait(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }
 
+//use scale and wait() to pop load each card in succession
 async function popLoader() {
   for (let i = 1; i < 12; i++) {
-    await wait(200);
     document.getElementById("suggestions").style.display = 'none';
-    const el = document.getElementById("day" + i);
-    el.style.display = "flex";
+    const card = document.getElementById("day" + i);
+    card.style.display = "flex";
 
-    let scale = 0.3;
-
-    async function transitionFrame() {
-      scale += 0.1;
+    //scale from .3 to 1 every .01 second with .1 increments
+    for (let i = .3; i < 1; i+=.1) {
       await wait(10);
-      el.style.scale = scale;
-
-      if (scale < 1) {
-        transitionFrame();
-      } else {
-        await wait(10);
-
-        el.style.scale = scale - 0.1;
-      }
+      card.style.scale = i;
     }
 
-    transitionFrame();
+    await wait(10);
+    card.style.scale = 1;
   }
   formLoaded = true;
 }
@@ -339,17 +335,22 @@ async function submitForm() {
   document.getElementById("weather-grid").style.display = "none";
   document.getElementById("chart-map-desc-container").style.display = "none";
   document.getElementById('suggestions').style.display = 'none';
+
   //create directions link
   const directionsLink = document.getElementById("directions-link");
   directionsLink.href = 'https://www.google.com/maps/place/' + document.getElementById("location").value;
 
+  //default hourly dropdown value
   const dropDownVal = document.querySelector('.chart-dropdown');
   dropDownVal.value = '1';
+
+  //reset hourly chart
   if (myChart) {
     myChart.destroy();
     lastDataType = 'Temperature';
   }
   
+  //reset day cards
   for (let i = 1; i < 12; i++) {
     const el = document.getElementById("day" + i);
     el.style.display = "none";
@@ -359,8 +360,7 @@ async function submitForm() {
   formLoaded = false;
   gradientBorder();
 
-  const currentTempUnit = document.getElementById("slider-text").innerHTML;
-
+  //reset temp unit
   if (document.querySelector(".slider-checkbox").checked) {
     document.querySelector(".slider-checkbox").checked = false;
     swapTempUnit();
@@ -375,42 +375,12 @@ async function submitForm() {
   socket.send(location);
 }
 
-const daysOfTheWeek = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+const daysOfTheWeek = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday",];
 
 //set weather icon based on API calls icon text
 function setWeatherIcon(code, weatherIcon) {
   //☀️☁️🌨️⛅❄️⛈️🌫️
-  //find the common emoji for the given weather name
-
+  //find emoji based on weather code
   emojiMap = {
     "🌧️": [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82],
     "🌨️": [71, 73, 75, 77, 85, 86],
@@ -421,6 +391,7 @@ function setWeatherIcon(code, weatherIcon) {
     "☁️": [3],
   };
 
+  //magic
   const emoji = Object.keys(emojiMap).find((key) =>
     emojiMap[key].includes(code)
   );
@@ -441,6 +412,7 @@ function setCurrentWeatherStatus(code) {
   const weatherStatus = Object.keys(weatherStrings).find((key) =>
     weatherStrings[key].includes(code)
   );
+
   const currentWeatherStatus = document.getElementById("current-weather");
   currentWeatherStatus.innerHTML = weatherStatus;
 }
@@ -455,13 +427,10 @@ function formatDate(date, day) {
       currentDayIndex = i;
     }
   }
-
   const offset = day - 3;
   let dayNameStr = daysOfTheWeek[currentDayIndex + offset];
   dayNameStr = dayNameStr.slice(0, 3);
-
   let undashedDate = date.slice(4).replace(/-/g, "");
-
   const dayOfMonth = undashedDate.slice(-2); //day
   const dateString = dayOfMonth + "<br>" + dayNameStr;
   return dateString;
@@ -481,6 +450,7 @@ async function gradientBorder() {
     borderElement.style.background =
       "linear-gradient(" + deg + "deg, rgb(217, 219, 221) 40%, rgb(91, 0, 227) 60%";
   }
+  //when the form is loaded
   updateChart("Temperature", true);
   getDate(true);
 }
@@ -621,17 +591,9 @@ const fahrenheitToCelsius = (f) => {
   return ((f - 32) * 5 / 9).toFixed(1);
 }
 
-// const celsiusTofahrenheit = (c) => {
-//   return ((c * 9 / 5) + 32).toFixed(1);
-// }
-
 const inchesToMillimeters = (i) => {
   return (i * 25.4).toFixed(1);
 }
-
-// const millimetersToInces = (m) => {
-//   return (m / 25.4).toFixed(1);
-// }
 
 let myChart;
 let lastDataType = "Temperature";
@@ -666,7 +628,7 @@ function updateChart(dataType, showToday) {
     "Humidity": { jsonObjName: "relative_humidity_2m", unit: "%" },
     "Cloud Cover": { jsonObjName: "cloud_cover", unit: "%" },
     "Wind Speed": { jsonObjName: "wind_speed_10m", unit: "mph" },
-    "Percipitation Chance": { jsonObjName: "precipitation_probability", unit: "%" }
+    "Precipitation Chance": { jsonObjName: "precipitation_probability", unit: "%" }
   };
   
   // Provide a default value if dataType is not found
@@ -810,9 +772,27 @@ document.getElementById("logo").addEventListener("click", () => {
 //Sunrise and set stuff
 async function getDate(today) {
 
-  const dayIndex = (today) ? 3 : localStorage.getItem('clickedDay');
+  //use current day if not called from a clicked day card, where today would be false
+  const dayIndex = (today) ? 4 : localStorage.getItem('clickedDay');
 
+  //make Date object
   const data = JSON.parse(localStorage.getItem('apiData'));
-  const dateStr = data.daily.time[dayIndex];
-  socket.send('date:' + dateStr);
+  const dateNum = data.daily.time[dayIndex];
+  const dateObj = new Date(dateNum);
+
+  //make a string to create future Date obj adjusted for timezone
+  let dateStr = JSON.stringify(dateObj);
+  let tzDate = dateStr.slice(1);
+  tzDate = tzDate.substring(0, tzDate.length-2);
+
+  //get offset between client timezone and UTC in form like -04:00
+  const offset = dateObj.getTimezoneOffset();
+  const hours = Math.floor(Math.abs(offset) / 60);
+  const minutes = Math.abs(offset) % 60;
+  const sign = offset >=0 ? '-' : '+';
+  const formattedOffset = (`${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
+
+  tzDate = tzDate + formattedOffset;
+
+  socket.send(`date:${tzDate}`);
 }
