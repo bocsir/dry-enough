@@ -561,7 +561,6 @@ document.getElementById("logo").addEventListener("click", () => {
 const weatherItems = document.getElementsByClassName("weather-item");
 for (let i = 0; i < weatherItems.length; i++) {
   weatherItems[i].addEventListener("click", () => {
-    document.getElementById('tip').style.display = 'none';
     localStorage.setItem("clickedDay", i);
     updateChart();
     getDate(false);
@@ -573,10 +572,10 @@ function chartsDescription(dayEl, clickedDay) {
   let parts = dateString.split(" ");
   dateString = parts[1] + " " + parts[0];
 
-  let descriptionStr =  "Hourly weather for " + dateString + ":"
+  let descriptionStr =  "Data for " + dateString + ":"
 
   if(clickedDay === 4) {
-    descriptionStr = "Hourly weather for today, " + dateString + ":"
+    descriptionStr = "Data for today, " + dateString + ":"
   }
 
   document.getElementById("charts-description").innerHTML = descriptionStr;

@@ -16,9 +16,10 @@ html {
 
 #github-link {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 16px;
+    right: 16px;
     color: white;
+    height: 22px;
 }
 
 #github-link i:hover {
@@ -75,10 +76,6 @@ header {
     text-align: center;
 }
 
-header * {
-    margin-bottom: 10px;
-}
-
 hr {
     margin-top: 15px;
     width: 50%;
@@ -105,37 +102,35 @@ hr {
 
 #form-background {
     position: relative;
-    /* background-image: url("../bgh.svg"); */
     background-size: cover;
     transform: rotate(180deg);
-    width: 100%;
-    height: 100%;
-    height: 153px;
-    width: 316px;
+    width: 98%;
+    height: 96%;
     border-radius: 21px;
     background-color: rgb(0, 22, 34);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #form {
     background: transparent;
     position: relative;
-    border-radius: 21px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 146px;
-    width: 316px;
+    height: 80%;
     transform: rotate(180deg);
-
 }
 
 #location {
     font-size: 1rem;
-    margin-top: 10px;
+    margin-top: 5px;
     width: 13rem;
     padding: 5px;
     border: 2px solid black;
-    outline: 2px solid white;
+    outline: 2px solid #d9dbdd;
+    background: #d9dbdd;
     border-radius: 6px;
     caret-color:rgb(109, 0, 0);
 }
@@ -265,8 +260,17 @@ form label {
     font-size: 1rem;
 }
 
-#weather-grid:first-child .weather-item .inline-span{
-    width: 92px;
+#day4-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#weather-grid:first-child .weather-item .inline-span {
+    width: fit-content;
+}
+#weather-grid:first-child .weather-item .inline-span .date {
+    margin-right: 10px;
 }
 
 #weather-grid {
@@ -428,6 +432,7 @@ form label {
     position: relative;
     width: 550px;
     height: 285px;
+    border-radius: 10px;
 }
 
 #sun-times {
@@ -461,11 +466,6 @@ a:visited{
 #charts-description {
     margin-left: 5px;
     margin-top: 50px;
-}
-
-#tip {
-    font-size: .7em;
-    text-align: center;
 }
 
 .chart {
@@ -513,6 +513,8 @@ h3 {
     height: 100%;
     background-color: #00000063;
     position: absolute; 
+    border-radius: 10px;
+
 }
 
 /* circles will be rotated based on azimuth */
@@ -530,6 +532,7 @@ h3 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     color: black;
     height: min-content;
     font-size: 1.8rem;

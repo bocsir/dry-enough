@@ -28,8 +28,8 @@
             <section id="form-border">
                 <div id="form-background">
                     <form id="form" action="/submit" method="POST">
-                        <label for="location">Enter a location</label>
-                        <input type="text" id="location" name="location" placeholder="ex: New York City/ 10007" autocomplete="off">
+                        <label for="location">Enter any location</label>
+                        <input type="text" id="location" name="location" placeholder="eg. Chicago, IL" autocomplete="off">
                         <ul id="suggestions"></ul>
                         <input type="submit" id="submit" value="Submit" onClick="submitForm(); return false">
                     </form>
@@ -50,8 +50,6 @@
                 <div id="results-charts-container">
 
                     <div id="weather-grid">
-                        <p id="tip">Select any day for hourly information</p>
-
                         <div class="weather-item-row">
                             <div class="weather-item" id="day1">
                                 <div class="inline-span">
