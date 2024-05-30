@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-const socket = new WebSocket('wss://dry-enough.onrender.com');
-//const socket = new WebSocket("ws://localhost:5500");
+//const socket = new WebSocket('wss://dry-enough.onrender.com');
+const socket = new WebSocket("ws://localhost:5500");
 let debounceTimeout;
 let li;
 const suggestionsListEl = document.getElementById('suggestions')
@@ -145,9 +145,9 @@ function showLocation(locationObj) {
 
   //use names if theyre there
   let headerString = "Weather for ";
-  headerString += (locationName) ? locationName : '';
-  headerString += (locationRegion) ? locationRegion : '';
-  headerString += (locationCountry) ? locationCountry : '';
+  headerString += (locationName !== 'undefined') ? locationName : '';
+  headerString += (locationRegion !== 'undefined') ? locationRegion : '';
+  headerString += (locationCountry !== 'undefined') ? locationCountry : '';
   headerString += ':';
 
   resultsHeader.innerHTML = headerString;
@@ -509,7 +509,7 @@ checkboxElement.addEventListener("change", swapTempUnit);
 
 function swapTempUnit() {
   updateChart();
-  document.getElementById('suggestions').style.display = none;
+  document.getElementById('suggestions').style.display = 'none';
   const spanElement = document.getElementById("slider-text");
 
   //toggle unit shown in temp toggle switch and weather grid
@@ -589,6 +589,12 @@ const fahrenheitToCelsius = (f) => {
 const inchesToMillimeters = (i) => {
   return (i * 25.4).toFixed(1);
 }
+
+document.querySelector('.chart-dropdown').addEventListener('change', (e) => {
+  console.log(e.target.options[e.target.selectedIndex].text);
+  updateChart(e.target.options[e.target.selectedIndex].text);
+});
+
 
 let myChart;
 let lastDataType = "Temperature";
